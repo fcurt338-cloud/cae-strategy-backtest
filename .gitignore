@@ -1,0 +1,4 @@
+data/raw/*_15m.csv
+results/*.txt
+__pycache__/
+*.pyc

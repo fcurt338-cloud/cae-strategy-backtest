@@ -1,0 +1,48 @@
+{
+  "performance": {
+    "starting_equity": 10000.0,
+    "final_equity": 0.0018354929185024128,
+    "total_return_pct": -99.99998164507082,
+    "max_drawdown_pct": -99.99998164507082,
+    "n_trades": 1851,
+    "win_rate_pct": 9.238249594813615,
+    "profit_factor": 0.2189056518051845,
+    "avg_winner": 15.82619146424576,
+    "avg_loser": -7.3587876298613555,
+    "avg_holding_hours": 4.290653700702323,
+    "sharpe": -16.650214811409132,
+    "sortino": -42.70157499499493,
+    "exit_reason_counts": {
+      "coil_reentry": 867,
+      "volume_fade": 721,
+      "stop": 263
+    }
+  },
+  "by_year": {
+    "2023": {
+      "n_trades": 312,
+      "total_pnl": -8839.06559235233,
+      "win_rate_pct": 9.615384615384615,
+      "profit_factor": 0.2265108035647941
+    },
+    "2024": {
+      "n_trades": 276,
+      "total_pnl": -744.6984412147774,
+      "win_rate_pct": 8.333333333333334,
+      "profit_factor": 0.1290598030794225
+    },
+    "2025": {
+      "n_trades": 588,
+      "total_pnl": -72.24576988969001,
+      "win_rate_pct": 9.013605442176871,
+      "profit_factor": 0.09291293659929055
+    },
+    "2026": {
+      "n_trades": 675,
+      "total_pnl": -0.47467432425924583,
+      "win_rate_pct": 9.62962962962963,
+      "profit_factor": 0.1260276325782576
+    }
+  },
+  "n_symbols": 50
+}

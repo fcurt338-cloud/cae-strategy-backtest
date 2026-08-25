@@ -1,0 +1,270 @@
+{
+  "coil_lookback": [
+    {
+      "value": 12,
+      "n_trades": 8670,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.3217993079584773,
+      "profit_factor": 0.010421570176559461,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -77.34525941415627
+    },
+    {
+      "value": 18,
+      "n_trades": 7274,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.7668408028594995,
+      "profit_factor": 0.025533424079949317,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -69.68382966251937
+    },
+    {
+      "value": 24,
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": 32,
+      "n_trades": 5880,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.639455782312925,
+      "profit_factor": 0.059838920085119936,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -60.623141403629894
+    },
+    {
+      "value": 48,
+      "n_trades": 4405,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 4.199772985244041,
+      "profit_factor": 0.0759842683272532,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -45.536520106440506
+    }
+  ],
+  "breakout_vol_mult_coil": [
+    {
+      "value": 2.0,
+      "n_trades": 8594,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.5606236909471725,
+      "profit_factor": 0.016920350260928627,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -81.66665789036419
+    },
+    {
+      "value": 2.5,
+      "n_trades": 7525,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.681063122923588,
+      "profit_factor": 0.01895994918394709,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -74.7956691926323
+    },
+    {
+      "value": 3.0,
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": 4.0,
+      "n_trades": 4967,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8655123817193475,
+      "profit_factor": 0.025420593163199376,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -60.714641870289476
+    },
+    {
+      "value": 5.0,
+      "n_trades": 3884,
+      "total_return_pct": -99.99999999999991,
+      "win_rate_pct": 3.887744593202884,
+      "profit_factor": 0.03140409690423466,
+      "max_drawdown_pct": -99.99999999999991,
+      "sharpe": -51.96393940909504
+    }
+  ],
+  "max_coil_range_pct": [
+    {
+      "value": 0.06,
+      "n_trades": 6193,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.4070725012110445,
+      "profit_factor": 0.013727102397934888,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -76.14271597550265
+    },
+    {
+      "value": 0.08,
+      "n_trades": 6455,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.6715724244771497,
+      "profit_factor": 0.01325568205230526,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -71.98214137903904
+    },
+    {
+      "value": 0.1,
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": 0.14,
+      "n_trades": 6607,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.965491145754503,
+      "profit_factor": 0.020866555737154797,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -65.68403334984018
+    },
+    {
+      "value": 0.2,
+      "n_trades": 6627,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 4.04406216991097,
+      "profit_factor": 0.020863292517008684,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -63.909522561306034
+    }
+  ],
+  "vol_dryup_mult": [
+    {
+      "value": 0.45,
+      "n_trades": 3335,
+      "total_return_pct": -99.9999999999874,
+      "win_rate_pct": 3.4482758620689653,
+      "profit_factor": 0.01951966009649322,
+      "max_drawdown_pct": -99.99999999998741,
+      "sharpe": -50.94656806525687
+    },
+    {
+      "value": 0.55,
+      "n_trades": 4880,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.668032786885246,
+      "profit_factor": 0.025740914681957307,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -62.18442206000195
+    },
+    {
+      "value": 0.65,
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": 0.75,
+      "n_trades": 7940,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 4.143576826196473,
+      "profit_factor": 0.027442862616204967,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.55634098249168
+    },
+    {
+      "value": 0.85,
+      "n_trades": 9245,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 4.261763115197404,
+      "profit_factor": 0.03477405073042751,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -73.32259906044942
+    }
+  ],
+  "entry_fill": [
+    {
+      "value": "close",
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": "next_open",
+      "n_trades": 6525,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8314176245210727,
+      "profit_factor": 0.021193983983147594,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.11235940443567
+    }
+  ],
+  "stop_mode": [
+    {
+      "value": "structure",
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": "fixed15",
+      "n_trades": 6483,
+      "total_return_pct": -99.99875439406037,
+      "win_rate_pct": 4.211013419713096,
+      "profit_factor": 0.03313595935289993,
+      "max_drawdown_pct": -99.99875439406037,
+      "sharpe": -62.682942923777944
+    }
+  ],
+  "breakout_vol_ref": [
+    {
+      "value": "coil_avg",
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": "sma20",
+      "n_trades": 7240,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.6878453038674035,
+      "profit_factor": 0.019657957810582972,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -72.46699951065017
+    }
+  ],
+  "trail_mode": [
+    {
+      "value": "atr",
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020949978043949723,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.3225075483769
+    },
+    {
+      "value": "swing_low",
+      "n_trades": 6537,
+      "total_return_pct": -100.0,
+      "win_rate_pct": 3.8549793483249197,
+      "profit_factor": 0.020943014115283803,
+      "max_drawdown_pct": -100.0,
+      "sharpe": -70.66677529232524
+    }
+  ]
+}

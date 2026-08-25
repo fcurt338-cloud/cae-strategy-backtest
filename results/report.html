@@ -1,0 +1,384 @@
+<title>Coil Absorption Expansion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f3f4f7; --surface:#ffffff; --surface-2:#eef0f4; --border:#d7dbe3;
+    --text:#1b1f2a; --text-dim:#5b6272;
+    --accent:#2f7d7d; --accent-soft:#e4f0ef;
+    --loss:#b3402f; --loss-soft:#fbe9e6;
+    --gain:#2f7a4f; --gain-soft:#e8f4ec;
+    --warn:#a6721f; --warn-soft:#faf1df;
+    --shadow: 0 1px 2px rgba(20,24,34,0.06), 0 8px 24px -12px rgba(20,24,34,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+      --text:#e7eaf1; --text-dim:#939bad;
+      --accent:#63bdb8; --accent-soft:#182b2c;
+      --loss:#e2685a; --loss-soft:#2c1a19;
+      --gain:#7bc496; --gain-soft:#16261c;
+      --warn:#d8a54e; --warn-soft:#2b2313;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+    --text:#e7eaf1; --text-dim:#939bad;
+    --accent:#63bdb8; --accent-soft:#182b2c;
+    --loss:#e2685a; --loss-soft:#2c1a19;
+    --gain:#7bc496; --gain-soft:#16261c;
+    --warn:#d8a54e; --warn-soft:#2b2313;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px; line-height:1.6; margin:0; padding:0 20px 80px;
+  }
+  .wrap{max-width:1080px; margin:0 auto;}
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; font-weight:600; margin:0;}
+  h1{font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; letter-spacing:-0.01em;}
+  h2{font-size:1.5rem; margin-bottom:.25rem;}
+  h3{font-size:1.1rem; margin-bottom:.4rem;}
+  p{margin:.5rem 0;}
+  .prose{max-width:70ch;}
+  .prose p{color:var(--text);}
+  .dim{color:var(--text-dim);}
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+
+  header.masthead{
+    padding:48px 0 28px; display:flex; flex-direction:column; gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); font-weight:600;
+  }
+  .subtitle{color:var(--text-dim); font-size:1.05rem; max-width:62ch;}
+
+  section{margin-top:44px;}
+  section > .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px;}
+
+  /* Verdict band */
+  .verdict{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden;
+    margin-top:18px; box-shadow:var(--shadow);
+  }
+  .tile{background:var(--surface); padding:20px 18px; display:flex; flex-direction:column; gap:6px;}
+  .tile .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); font-weight:600;}
+  .tile .value{font-family:"IBM Plex Mono",monospace; font-size:1.7rem; font-weight:600; font-variant-numeric:tabular-nums;}
+  .tile .value.loss{color:var(--loss);}
+  .tile .value.gain{color:var(--gain);}
+  .tile .sub{font-size:.78rem; color:var(--text-dim);}
+
+  .verdict-banner{
+    margin-top:14px; padding:14px 18px; border-radius:10px; background:var(--loss-soft);
+    border:1px solid color-mix(in srgb, var(--loss) 35%, transparent);
+    color:var(--text); font-size:.95rem; display:flex; gap:10px; align-items:flex-start;
+  }
+  .verdict-banner .tag{
+    font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em;
+    background:var(--loss); color:var(--surface); padding:3px 8px; border-radius:5px; font-weight:600; flex:none;
+  }
+
+  /* Cards / panels */
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow);}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:800px){.grid-2{grid-template-columns:1fr;}}
+
+  .metrics-mini{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;}
+  .mm{padding:10px 12px; background:var(--surface-2); border-radius:8px;}
+  .mm .k{font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); font-weight:600;}
+  .mm .v{font-family:"IBM Plex Mono",monospace; font-size:1.05rem; font-weight:600;}
+  .mm .v.loss{color:var(--loss);} .mm .v.gain{color:var(--gain);}
+
+  /* Tables */
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:.88rem;}
+  thead th{
+    text-align:right; padding:9px 12px; background:var(--surface-2); color:var(--text-dim);
+    font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em;
+    border-bottom:1px solid var(--border); white-space:nowrap; font-weight:600;
+  }
+  thead th:first-child, tbody td:first-child{text-align:left;}
+  tbody td{padding:8px 12px; text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+  td.loss{color:var(--loss);} td.gain{color:var(--gain);}
+  tr.base-row td{background:var(--accent-soft); font-weight:600;}
+  tr.best-row td{box-shadow: inset 2px 0 0 var(--accent);}
+
+  /* Equity chart */
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px 14px; box-shadow:var(--shadow);}
+  .chart-card svg{width:100%; height:auto; display:block;}
+  .chart-caption{display:flex; justify-content:space-between; font-size:.76rem; color:var(--text-dim); margin-top:6px; font-family:"IBM Plex Mono",monospace;}
+
+  .exit-bars{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+  .exit-row{display:grid; grid-template-columns:130px 1fr 90px; align-items:center; gap:12px;}
+  .exit-row .name{font-size:.85rem; color:var(--text-dim);}
+  .exit-track{height:10px; background:var(--surface-2); border-radius:6px; overflow:hidden;}
+  .exit-fill{height:100%; border-radius:6px;}
+  .exit-row .pct{font-family:"IBM Plex Mono",monospace; font-size:.82rem; text-align:right;}
+
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:.72rem; font-family:"IBM Plex Mono",monospace; font-weight:600;}
+  .pill.loss{background:var(--loss-soft); color:var(--loss);}
+  .pill.gain{background:var(--gain-soft); color:var(--gain);}
+  .pill.warn{background:var(--warn-soft); color:var(--warn);}
+  .pill.neutral{background:var(--surface-2); color:var(--text-dim);}
+
+  .callout{
+    border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 10px 10px 0;
+    padding:14px 18px; margin:16px 0;
+  }
+  .callout.warn{border-left-color:var(--warn); background:var(--warn-soft);}
+  .callout h4{margin:0 0 6px; font-family:"IBM Plex Sans"; font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text);}
+
+  ol.refine, ul.refine{padding-left:1.25rem;}
+  ol.refine li, ul.refine li{margin-bottom:.6rem;}
+
+  footer{margin-top:60px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-dim); font-size:.85rem;}
+  .filelist{font-family:"IBM Plex Mono",monospace; font-size:.82rem; background:var(--surface-2); border-radius:8px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Backtest report · Binance spot · 2023–2026</div>
+  <h1>Coil Absorption Expansion</h1>
+  <p class="subtitle">A pure price-and-volume breakout system for low-cap USDT pairs, backtested exactly as specified across 50 real Binance low-cap pairs, 15-minute and 1-hour timeframes, full available history. No RSI, MACD, Bollinger Bands, or moving-average logic anywhere in the code.</p>
+</header>
+
+<section>
+  <div class="section-head"><h2>The verdict</h2></div>
+  <div class="verdict">
+    <div class="tile"><div class="label">Total return (15m)</div><div class="value loss">&minus;100.00%</div><div class="sub">$10,000 &rarr; ~$0</div></div>
+    <div class="tile"><div class="label">Total return (1h)</div><div class="value loss">&minus;99.9998%</div><div class="sub">$10,000 &rarr; $0.0018</div></div>
+    <div class="tile"><div class="label">Win rate</div><div class="value loss">3.9% / 9.2%</div><div class="sub">15m / 1h</div></div>
+    <div class="tile"><div class="label">Profit factor</div><div class="value loss">0.02 / 0.22</div><div class="sub">1.0 = breakeven</div></div>
+    <div class="tile"><div class="label">Symbols profitable</div><div class="value loss">0 / 50</div><div class="sub">15m universe</div></div>
+  </div>
+  <div class="verdict-banner">
+    <span class="tag">Result</span>
+    <span>Both timeframes wipe out the account. This holds under every single-parameter variation tested (32 sweep configurations), under an added exit-timing refinement, and it is <strong>not</strong> a sizing or accounting bug — it traces to the entry logic itself: confirmed breakouts fail and close back below the trigger level almost immediately, 46&ndash;47% of the time. Full diagnosis below.</span>
+  </div>
+</section>
+
+<section class="prose">
+  <h2>What was built</h2>
+  <p>Five modules, no third-party frameworks beyond pandas/numpy: a universe builder (Binance <code>exchangeInfo</code> + CoinGecko market caps), a resumable OHLCV downloader, vectorized CAE signal generation, a portfolio-level event-driven backtester (shared equity, max 4 concurrent positions, realistic fills), and a parameter sweep. Every rule from the spec is implemented literally &mdash; coil detection, five-condition breakout entry, the full exit stack (structural/ATR stop, scaled TP1, ATR/swing-low trailing, 48h time stop, coil-reentry invalidation, volume-fade exit), 0.75% risk sizing, and 0.1% fee + 1.5% slippage per side.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Data &amp; universe</h2></div>
+  <div class="panel">
+    <div class="metrics-mini">
+      <div class="mm"><div class="k">Exchange</div><div class="v">Binance spot</div></div>
+      <div class="mm"><div class="k">Pairs backtested</div><div class="v">50</div></div>
+      <div class="mm"><div class="k">History window</div><div class="v">2023-01 &rarr; 2026-08</div></div>
+      <div class="mm"><div class="k">Bars fetched</div><div class="v">~2.9M</div></div>
+      <div class="mm"><div class="k">Costs / side</div><div class="v">0.1% fee, 1.5% slip</div></div>
+      <div class="mm"><div class="k">Risk / trade</div><div class="v">0.75% equity</div></div>
+    </div>
+    <p class="dim" style="margin-top:16px; font-size:.9rem;">
+      Universe: every live Binance USDT spot pair (475) cross-referenced against CoinGecko market cap, kept if $1M&ndash;$100M, then narrowed to the <strong>top 50 by 24h Binance quote volume</strong> so the full multi-year 15m+1h history could actually be fetched and simulated in this session &mdash; not literally every qualifying low-cap pair (there were 302 that cleared the market-cap screen). Each symbol also passes the spec's own filters live inside the backtest: 14-day listing-age exclusion and a rolling 7-day $100k average-volume gate that masks entries (not the underlying price series, which would corrupt the rolling coil/ATR math) during illiquid stretches.
+    </p>
+    <p class="dim" style="font-size:.9rem;">
+      Two honest caveats: (1) market cap is CoinGecko's <em>current</em> snapshot applied across the whole 2023&ndash;2026 window, not point-in-time history &mdash; a coin worth $60M today may have been a $400M mid-cap in 2024. (2) Only pairs still live on Binance today could be included, so tokens that were delisted or went to zero along the way are absent &mdash; a survivorship bias that should make these results look <em>better</em> than live trading, not worse. The strategy still failed comprehensively.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Baseline results, as specified</h2></div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>15-minute</h3>
+      <span class="pill loss">&minus;100.00% return</span>
+      <div class="metrics-mini">
+        <div class="mm"><div class="k">Trades</div><div class="v">6,537</div></div>
+        <div class="mm"><div class="k">Win rate</div><div class="v loss">3.85%</div></div>
+        <div class="mm"><div class="k">Profit factor</div><div class="v loss">0.021</div></div>
+        <div class="mm"><div class="k">Avg winner</div><div class="v gain">+$0.83*</div></div>
+        <div class="mm"><div class="k">Avg loser</div><div class="v loss">&minus;$1.58*</div></div>
+        <div class="mm"><div class="k">Max drawdown</div><div class="v loss">&minus;100.0%</div></div>
+        <div class="mm"><div class="k">Avg hold</div><div class="v">1.11 h</div></div>
+        <div class="mm"><div class="k">Sharpe</div><div class="v loss">&minus;70.3</div></div>
+      </div>
+      <p class="dim" style="font-size:.78rem; margin-top:10px;">*Nominal $, deflated by compounding &mdash; equity is effectively zero for most of 2024&ndash;2026, so later trades risk pennies.</p>
+    </div>
+    <div class="panel">
+      <h3>1-hour</h3>
+      <span class="pill loss">&minus;99.9998% return</span>
+      <div class="metrics-mini">
+        <div class="mm"><div class="k">Trades</div><div class="v">1,851</div></div>
+        <div class="mm"><div class="k">Win rate</div><div class="v loss">9.24%</div></div>
+        <div class="mm"><div class="k">Profit factor</div><div class="v loss">0.219</div></div>
+        <div class="mm"><div class="k">Avg winner</div><div class="v gain">+$15.83</div></div>
+        <div class="mm"><div class="k">Avg loser</div><div class="v loss">&minus;$7.36</div></div>
+        <div class="mm"><div class="k">Max drawdown</div><div class="v loss">&minus;100.0%</div></div>
+        <div class="mm"><div class="k">Avg hold</div><div class="v">4.29 h</div></div>
+        <div class="mm"><div class="k">Sharpe</div><div class="v loss">&minus;16.7</div></div>
+      </div>
+      <p class="dim" style="font-size:.78rem; margin-top:10px;">1h is meaningfully less bad than 15m &mdash; fewer, larger, slightly-more-often-right trades &mdash; but still an order of magnitude short of breakeven.</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 15m</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <path d="M 10.0,270 L 10.0,10.0 L 13.3,10.0 L 16.5,31.2 L 19.8,63.8 L 23.0,87.9 L 26.3,127.7 L 29.6,144.8 L 32.8,156.6 L 36.1,170.9 L 39.3,184.4 L 42.6,192.8 L 45.9,202.7 L 49.1,208.9 L 52.4,211.6 L 55.7,218.1 L 58.9,220.5 L 62.2,224.4 L 65.5,231.9 L 68.7,238.2 L 72.0,242.0 L 75.3,245.6 L 78.5,249.0 L 81.8,250.3 L 85.0,252.6 L 88.3,254.9 L 91.6,256.2 L 94.8,257.7 L 98.1,258.7 L 101.3,259.3 L 104.6,259.9 L 107.9,260.9 L 111.1,261.8 L 114.4,262.9 L 117.6,263.2 L 120.9,263.8 L 124.2,264.6 L 127.4,265.5 L 130.7,266.2 L 133.9,266.4 L 137.2,266.9 L 140.5,267.6 L 143.7,267.8 L 147.0,268.2 L 150.3,268.4 L 153.5,268.6 L 156.8,268.8 L 160.0,268.9 L 163.3,269.1 L 166.6,269.2 L 169.8,269.3 L 173.1,269.4 L 176.3,269.4 L 179.6,269.5 L 182.9,269.5 L 186.1,269.6 L 189.4,269.7 L 192.6,269.7 L 195.9,269.7 L 199.2,269.8 L 202.4,269.8 L 205.7,269.8 L 208.9,269.9 L 212.2,269.9 L 215.5,269.9 L 218.7,269.9 L 222.0,269.9 L 225.2,269.9 L 228.5,269.9 L 231.8,269.9 L 235.0,269.9 L 238.3,270.0 L 990.0,270.0 L 990.0,270 Z"
+              fill="var(--loss)" opacity="0.12" stroke="none"/>
+        <polyline points="10.0,10.0 13.3,10.0 16.5,31.2 19.8,63.8 23.0,87.9 26.3,127.7 29.6,144.8 32.8,156.6 36.1,170.9 39.3,184.4 42.6,192.8 45.9,202.7 49.1,208.9 52.4,211.6 55.7,218.1 58.9,220.5 62.2,224.4 65.5,231.9 68.7,238.2 72.0,242.0 75.3,245.6 78.5,249.0 81.8,250.3 85.0,252.6 88.3,254.9 91.6,256.2 94.8,257.7 98.1,258.7 101.3,259.3 104.6,259.9 107.9,260.9 111.1,261.8 114.4,262.9 117.6,263.2 120.9,263.8 124.2,264.6 127.4,265.5 130.7,266.2 133.9,266.4 137.2,266.9 140.5,267.6 143.7,267.8 147.0,268.2 150.3,268.4 153.5,268.6 156.8,268.8 160.0,268.9 163.3,269.1 166.6,269.2 169.8,269.3 173.1,269.4 176.3,269.4 179.6,269.5 182.9,269.5 186.1,269.6 189.4,269.7 192.6,269.7 195.9,269.7 199.2,269.8 202.4,269.8 205.7,269.8 208.9,269.9 212.2,269.9 215.5,269.9 218.7,269.9 222.0,269.9 225.2,269.9 228.5,269.9 231.8,269.9 235.0,269.9 238.3,270.0 990.0,270.0"
+                  fill="none" stroke="var(--loss)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01-15</span><span>2026-08-25</span></div>
+    </div>
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 1h</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <path d="M 10.0,270 L 10.0,10.0 L 13.3,10.0 L 16.5,14.2 L 19.8,21.1 L 23.0,16.7 L 26.3,27.2 L 29.5,31.5 L 32.8,27.0 L 36.0,38.0 L 39.3,46.7 L 42.5,52.4 L 45.8,55.7 L 49.0,57.6 L 52.3,65.7 L 55.5,62.0 L 58.8,74.8 L 62.1,83.2 L 65.3,90.3 L 68.6,92.9 L 71.8,103.6 L 75.1,110.5 L 78.3,115.3 L 81.6,106.4 L 84.9,111.7 L 88.1,123.3 L 91.4,125.2 L 94.6,126.9 L 97.9,137.8 L 101.1,144.7 L 104.4,146.8 L 107.6,147.7 L 110.9,151.0 L 114.1,153.8 L 117.4,156.3 L 120.6,160.0 L 123.9,163.0 L 127.1,165.3 L 130.4,170.6 L 133.6,172.4 L 136.9,174.2 L 140.2,175.7 L 143.4,178.4 L 146.7,178.9 L 149.9,178.9 L 153.2,183.2 L 156.4,188.1 L 159.7,190.1 L 162.9,194.2 L 166.2,198.7 L 169.4,198.7 L 172.7,200.9 L 175.9,202.1 L 179.2,203.7 L 182.4,206.4 L 185.7,209.6 L 188.9,213.1 L 192.2,214.8 L 195.5,215.6 L 198.7,217.2 L 202.0,218.0 L 205.2,218.0 L 208.5,222.1 L 211.7,223.6 L 215.0,224.9 L 218.2,228.3 L 221.5,231.4 L 224.7,233.3 L 228.0,233.9 L 231.2,234.9 L 234.5,236.4 L 237.7,237.6 L 241.0,240.0 L 990.0,270.0 L 990.0,270 Z"
+              fill="var(--loss)" opacity="0.12" stroke="none"/>
+        <polyline points="10.0,10.0 13.3,10.0 16.5,14.2 19.8,21.1 23.0,16.7 26.3,27.2 29.5,31.5 32.8,27.0 36.0,38.0 39.3,46.7 42.5,52.4 45.8,55.7 49.0,57.6 52.3,65.7 55.5,62.0 58.8,74.8 62.1,83.2 65.3,90.3 68.6,92.9 71.8,103.6 75.1,110.5 78.3,115.3 81.6,106.4 84.9,111.7 88.1,123.3 91.4,125.2 94.6,126.9 97.9,137.8 101.1,144.7 104.4,146.8 107.6,147.7 110.9,151.0 114.1,153.8 117.4,156.3 120.6,160.0 123.9,163.0 127.1,165.3 130.4,170.6 133.6,172.4 136.9,174.2 140.2,175.7 143.4,178.4 146.7,178.9 149.9,178.9 153.2,183.2 156.4,188.1 159.7,190.1 162.9,194.2 166.2,198.7 169.4,198.7 172.7,200.9 175.9,202.1 179.2,203.7 182.4,206.4 185.7,209.6 188.9,213.1 192.2,214.8 195.5,215.6 198.7,217.2 202.0,218.0 205.2,218.0 208.5,222.1 211.7,223.6 215.0,224.9 218.2,228.3 221.5,231.4 224.7,233.3 228.0,233.9 231.2,234.9 234.5,236.4 237.7,237.6 241.0,240.0 244.2,239.5 247.5,241.7 250.8,243.0 254.0,244.0 257.3,244.8 260.5,245.3 263.8,245.8 267.0,247.2 270.3,248.1 273.5,248.1 276.8,248.7 280.0,248.9 283.3,250.0 306.1,253.5 340,257.8 400,262.2 500,267.3 600,269.1 700,269.8 800,270.0 900,270.0 990.0,270.0"
+                  fill="none" stroke="var(--loss)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01-15</span><span>2026-08-25</span></div>
+    </div>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:8px;">Both curves plunge to near-zero within the first months of 2023 and stay flat &mdash; there is no recovery, no cyclicality, no regime where the strategy turns around. 2023 alone accounts for essentially the entire loss (&minus;$9,719 of the $10,000 starting balance on 15m; &minus;$8,839 on 1h); 2024&ndash;2026 trades are fought over the last few dollars.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Root cause: this is a false-breakout problem, not a bug</h2></div>
+  <div class="panel">
+    <p>Before trusting these numbers I found and fixed one real implementation bug: on a tight coil the structural/ATR stop can sit only ~1&ndash;2% from entry, and naive <code>risk_amount / stop_distance</code> sizing was pushing 50%+ of account equity into single trades. I capped position notional to an equal-weight slice of equity (equity &divide; max concurrent positions) &mdash; standard for a spot account with no leverage. After that fix, losses became sane in dollar terms, but the strategy was still catastrophic &mdash; which is when I confirmed this is a signal-quality problem, not a plumbing problem.</p>
+    <h3 style="margin-top:18px;">Exit reason breakdown</h3>
+    <div class="exit-bars">
+      <div class="exit-row"><span class="name">Coil re-entry (15m)</span><div class="exit-track"><div class="exit-fill" style="width:46.1%; background:var(--loss);"></div></div><span class="pct">46.1%</span></div>
+      <div class="exit-row"><span class="name">Volume fade (15m)</span><div class="exit-track"><div class="exit-fill" style="width:39.4%; background:var(--warn);"></div></div><span class="pct">39.4%</span></div>
+      <div class="exit-row"><span class="name">Hard stop (15m)</span><div class="exit-track"><div class="exit-fill" style="width:14.5%; background:var(--text-dim);"></div></div><span class="pct">14.5%</span></div>
+      <div class="exit-row"><span class="name">Coil re-entry (1h)</span><div class="exit-track"><div class="exit-fill" style="width:46.8%; background:var(--loss);"></div></div><span class="pct">46.8%</span></div>
+      <div class="exit-row"><span class="name">Volume fade (1h)</span><div class="exit-track"><div class="exit-fill" style="width:38.9%; background:var(--warn);"></div></div><span class="pct">38.9%</span></div>
+      <div class="exit-row"><span class="name">Hard stop (1h)</span><div class="exit-track"><div class="exit-fill" style="width:14.2%; background:var(--text-dim);"></div></div><span class="pct">14.2%</span></div>
+    </div>
+    <p style="margin-top:16px;">Almost half of every trade, on both timeframes, ends in <strong>coil_reentry</strong>: price closes back below the exact breakout level within one to a few bars of entry. The entry rules already demand a lot &mdash; close above the coil high, volume &ge;3&times; the coil average, bar range &ge;1.5&times; coil ATR, a bullish candle closing in its upper half &mdash; and it still doesn't screen out spike-and-fade. On thin low-cap books, a single large market order (or a wash trade) can produce exactly this signature: a volume and range spike with no genuine follow-through demand behind it. That is the textbook microstructure risk this strategy is trying to trade <em>around</em>, and in this data it dominates instead.</p>
+    <p>Average hold time is 1.1 hours on 15m and 4.3 hours on 1h &mdash; nowhere near long enough for the +40% TP1 target to ever be reached. Not one of the 6,537 15m trades or 1,851 1h trades exited via <code>tp1</code>. Every "win" in the results is a trade that happened to be closed above entry by <em>volume_fade</em> or <em>coil_reentry</em>, not a trade that hit its profit target.</p>
+    <div class="callout warn">
+      <h4>I tested whether the exits were the problem &mdash; they aren't</h4>
+      <p style="margin:0;">Adding a grace period (no volume-fade or time-stop exits for the first 8 bars on 15m / 3 bars on 1h) changed almost nothing: 15m win rate moved from 3.85% to 4.29%, still &minus;100% return; 1h was numerically identical, because no fade/time exits were even firing inside that window. <code>coil_reentry</code> isn't gated by a grace period by design (it's meant to invalidate the setup fast) and it alone accounts for the bulk of losses &mdash; so the exit stack isn't the leak. The failure is upstream, in which breakouts the entry rules accept.</p>
+    </div>
+    <h3 style="margin-top:18px;">Per-symbol spread</h3>
+    <p><strong>0 of 50</strong> symbols were net profitable on 15m. On 1h, <strong>2 of 49</strong> were &mdash; ZENUSDT (+$456 over 62 trades, 22.6% win rate) and PARTIUSDT (+$0.004, statistically noise). Every other symbol lost money on both timeframes. This isn't a few bad tokens dragging down a good average &mdash; it's uniform across the universe.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Symbol</th><th>Timeframe</th><th>Trades</th><th>Win rate</th><th>Total PnL</th></tr></thead>
+        <tbody>
+          <tr><td>AMPUSDT</td><td>1h</td><td>96</td><td>5.2%</td><td class="loss">&minus;$1,860.96</td></tr>
+          <tr><td>DEXEUSDT</td><td>1h</td><td>95</td><td>3.2%</td><td class="loss">&minus;$1,434.23</td></tr>
+          <tr><td>ONGUSDT</td><td>15m</td><td>348</td><td>3.2%</td><td class="loss">&minus;$1,333.97</td></tr>
+          <tr><td>AMPUSDT</td><td>15m</td><td>398</td><td>1.8%</td><td class="loss">&minus;$1,285.73</td></tr>
+          <tr><td>SCRTUSDT</td><td>1h</td><td>90</td><td>10.0%</td><td class="loss">&minus;$1,278.39</td></tr>
+          <tr><td>ZENUSDT</td><td>1h</td><td>62</td><td>22.6%</td><td class="gain">+$455.73</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Parameter sensitivity</h2></div>
+  <p class="prose dim">Every parameter was swept one at a time around the default, holding everything else fixed. Baseline row highlighted. Best profit factor in each block bolded &mdash; note the scale: <strong>none of these ever approach 1.0</strong> (breakeven), let alone profitability.</p>
+
+  <h3 style="margin-top:22px;">15-minute</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Max DD</th></tr></thead>
+      <tbody>
+        <tr><td>coil_lookback</td><td>12</td><td>8,670</td><td>3.32%</td><td class="loss">0.010</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>coil_lookback</td><td>18</td><td>7,274</td><td>3.77%</td><td class="loss">0.026</td><td class="loss">&minus;100%</td></tr>
+        <tr class="base-row"><td>coil_lookback</td><td>24 (base)</td><td>6,537</td><td>3.85%</td><td class="loss">0.021</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>coil_lookback</td><td>32</td><td>5,880</td><td>3.64%</td><td class="loss">0.060</td><td class="loss">&minus;100%</td></tr>
+        <tr class="best-row"><td>coil_lookback</td><td><strong>48</strong></td><td>4,405</td><td>4.20%</td><td class="loss"><strong>0.076</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr><td>breakout_vol_mult</td><td>2.0</td><td>8,594</td><td>3.56%</td><td class="loss">0.017</td><td class="loss">&minus;100%</td></tr>
+        <tr class="base-row"><td>breakout_vol_mult</td><td>3.0 (base)</td><td>6,537</td><td>3.85%</td><td class="loss">0.021</td><td class="loss">&minus;100%</td></tr>
+        <tr class="best-row"><td>breakout_vol_mult</td><td><strong>5.0</strong></td><td>3,884</td><td>3.89%</td><td class="loss"><strong>0.031</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr><td>max_coil_range_pct</td><td>0.06&ndash;0.20</td><td>6,193&ndash;6,627</td><td>3.4&ndash;4.0%</td><td class="loss">0.013&ndash;0.021</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>vol_dryup_mult</td><td>0.45</td><td>3,335</td><td>3.45%</td><td class="loss">0.020</td><td class="loss">&minus;100%</td></tr>
+        <tr class="best-row"><td>vol_dryup_mult</td><td><strong>0.85</strong></td><td>9,245</td><td>4.26%</td><td class="loss"><strong>0.035</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr><td>entry_fill</td><td>next_open</td><td>6,525</td><td>3.83%</td><td class="loss">0.021</td><td class="loss">&minus;100%</td></tr>
+        <tr class="best-row"><td>stop_mode</td><td><strong>fixed15</strong></td><td>6,483</td><td>4.21%</td><td class="loss"><strong>0.033</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr><td>breakout_vol_ref</td><td>sma20</td><td>7,240</td><td>3.69%</td><td class="loss">0.020</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>trail_mode</td><td>swing_low</td><td>6,537</td><td>3.85%</td><td class="loss">0.021</td><td class="loss">&minus;100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:28px;">1-hour</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Max DD</th></tr></thead>
+      <tbody>
+        <tr><td>coil_lookback</td><td>8</td><td>2,749</td><td>8.15%</td><td class="loss">0.130</td><td class="loss">&minus;100%</td></tr>
+        <tr class="best-row"><td>coil_lookback</td><td><strong>12</strong></td><td>2,067</td><td>8.95%</td><td class="loss"><strong>0.233</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr class="base-row"><td>coil_lookback</td><td>15 (base)</td><td>1,851</td><td>9.24%</td><td class="loss">0.219</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>coil_lookback</td><td>18</td><td>1,641</td><td>9.81%</td><td class="loss">0.223</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>coil_lookback</td><td>24</td><td>1,223</td><td>10.55%</td><td class="loss">0.145</td><td class="loss">&minus;99.99%</td></tr>
+        <tr><td>breakout_vol_mult</td><td>2.0</td><td>2,619</td><td>8.29%</td><td class="loss">0.186</td><td class="loss">&minus;100%</td></tr>
+        <tr class="base-row"><td>breakout_vol_mult</td><td>3.0 (base)</td><td>1,851</td><td>9.24%</td><td class="loss">0.219</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>max_coil_range_pct</td><td>0.06&ndash;0.20</td><td>1,546&ndash;1,944</td><td>7.6&ndash;9.4%</td><td class="loss">0.211&ndash;0.219</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>vol_dryup_mult</td><td>0.45</td><td>815</td><td>8.83%</td><td class="loss">0.155</td><td class="loss">&minus;99.89%</td></tr>
+        <tr class="best-row"><td>vol_dryup_mult</td><td><strong>0.55</strong></td><td>1,296</td><td>9.34%</td><td class="loss"><strong>0.230</strong></td><td class="loss">&minus;100%</td></tr>
+        <tr><td>entry_fill</td><td>next_open</td><td>1,848</td><td>9.04%</td><td class="loss">0.219</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>stop_mode</td><td>fixed15</td><td>1,836</td><td>10.29%</td><td class="loss">0.167</td><td class="loss"><strong>&minus;95.78%</strong></td></tr>
+        <tr><td>breakout_vol_ref</td><td>sma20</td><td>1,835</td><td>9.10%</td><td class="loss">0.213</td><td class="loss">&minus;100%</td></tr>
+        <tr><td>trail_mode</td><td>swing_low</td><td>1,851</td><td>9.24%</td><td class="loss">0.209</td><td class="loss">&minus;100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:10px;">The single least-bad max drawdown found anywhere in the entire sweep &mdash; both timeframes, every parameter &mdash; is 1h with a fixed 15% stop, at &minus;95.78%. That is the honest ceiling of this rule set on this data: not "worse in some conditions," but no combination tested clears breakeven.</p>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>"Best parameter set"</h2></div>
+  <p>Answered as asked, but flagged for what it actually is: the least-catastrophic configuration found is <strong>1-hour timeframe, coil_lookback=12</strong> (profit factor 0.233, win rate 8.95%, max drawdown still &minus;100% over the full 3.6-year run). It is the top of a sweep where every result lost the account. There is no parameter set in the tested ranges &mdash; 32 configurations across 8 parameters, plus a two-stage refinement &mdash; that turns this into a viable strategy on this data. Reporting it as "best" without that context would be misleading.</p>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>Suggested refinements</h2></div>
+  <p>In order of how directly each targets the diagnosed cause &mdash; all pure price/volume, nothing lagging or oscillator-based:</p>
+  <ol class="refine">
+    <li><strong>Require a held breakout, not a single-bar spike.</strong> I attempted a "2 consecutive closes above the coil high" filter and it produced <em>zero</em> trades on both timeframes &mdash; not a market finding, an implementation artifact: the coil-high level is recomputed per bar from a trailing window that already includes the prior bar, so requiring the prior bar's close to also clear that same level is a mathematical impossibility, not a real constraint. The right version freezes the coil boundary at the moment the coil forms (before any breakout attempt) and then requires N consecutive closes above that fixed level. Worth implementing properly &mdash; it directly targets the 46% coil-reentry failure mode &mdash; but it needs a small restructure of the signal window and wasn't validated here.</li>
+    <li><strong>Add a same-bar dollar-volume floor on the trigger candle itself,</strong> separate from the 7-day universe filter &mdash; e.g., require the breakout bar's own quote volume above some absolute USD minimum. A 3&times; multiplier over a coil average is easy to trip with a single large order on a book with $100k/day of trailing volume; an absolute floor makes that order need to be genuinely large in dollar terms, not just large relative to a quiet coil.</li>
+    <li><strong>Require the breakout to clear the coil high by a minimum buffer</strong> (e.g. 1&ndash;2%), not just close above it by any amount. Tiny breakouts are the ones most likely to be noise, and they also produce the thinnest stops that (before the fix applied here) blow up position sizing.</li>
+    <li><strong>Re-test the optional upper-range-position filter</strong> ("price in the upper 40% of its 7d/14d range") &mdash; specified as optional and not included in the sweep here. Restricting entries to coils that formed after an established uptrend, rather than a coil found anywhere in a chart, could filter out the many downtrend-context breakouts that are more likely bull traps.</li>
+    <li><strong>Widen the volume-fade condition's timeframe</strong> or drop it in favor of relying on the trailing stop alone post-TP1 &mdash; it wasn't the primary leak here, but at 39% of exits it's still cutting real winners short given TP1 was never once reached.</li>
+  </ol>
+  <p class="dim">None of these guarantee a profitable system &mdash; a 46% immediate-failure rate on the core breakout signal is a large gap to close, and low-cap books may simply generate more false breakouts than genuine ones regardless of confirmation logic. They're the highest-leverage next experiments, in order.</p>
+</section>
+
+<footer>
+  <p><strong>Code &amp; data</strong> live locally at <code>cae-strategy-backtest/</code> (Downloads), fully modular and re-runnable:</p>
+  <div class="filelist">
+    <span>src/fetch_universe.py &nbsp;&mdash;&nbsp; Binance + CoinGecko universe builder</span>
+    <span>src/fetch_ohlcv_parallel.py &mdash; resumable, parallel OHLCV downloader</span>
+    <span>src/strategy.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; CAE signal generation (vectorized)</span>
+    <span>src/backtest.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; portfolio event-driven backtest engine</span>
+    <span>src/sweep.py, run_backtest.py, run_all.py &mdash; orchestration</span>
+    <span>results/*.csv, *.json &nbsp;&mdash;&nbsp; full trade logs, equity curves, sweep data</span>
+  </div>
+  <p style="margin-top:16px;">Universe (top 50 by volume), Binance klines, CoinGecko market caps &middot; fetched live for this report.</p>
+</footer>
+
+</div>

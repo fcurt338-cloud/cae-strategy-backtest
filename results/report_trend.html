@@ -1,0 +1,276 @@
+<title>Donchian Trend System</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f3f4f7; --surface:#ffffff; --surface-2:#eef0f4; --border:#d7dbe3;
+    --text:#1b1f2a; --text-dim:#5b6272;
+    --accent:#2f7d7d; --accent-soft:#e4f0ef;
+    --loss:#b3402f; --loss-soft:#fbe9e6;
+    --gain:#2f7a4f; --gain-soft:#e8f4ec;
+    --warn:#a6721f; --warn-soft:#faf1df;
+    --shadow: 0 1px 2px rgba(20,24,34,0.06), 0 8px 24px -12px rgba(20,24,34,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+      --text:#e7eaf1; --text-dim:#939bad;
+      --accent:#63bdb8; --accent-soft:#182b2c;
+      --loss:#e2685a; --loss-soft:#2c1a19;
+      --gain:#7bc496; --gain-soft:#16261c;
+      --warn:#d8a54e; --warn-soft:#2b2313;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+    --text:#e7eaf1; --text-dim:#939bad;
+    --accent:#63bdb8; --accent-soft:#182b2c;
+    --loss:#e2685a; --loss-soft:#2c1a19;
+    --gain:#7bc496; --gain-soft:#16261c;
+    --warn:#d8a54e; --warn-soft:#2b2313;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; font-size:16px; line-height:1.6; margin:0; padding:0 20px 80px;}
+  .wrap{max-width:1080px; margin:0 auto;}
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; font-weight:600; margin:0;}
+  h1{font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; letter-spacing:-0.01em;}
+  h2{font-size:1.5rem; margin-bottom:.25rem;}
+  h3{font-size:1.1rem; margin-bottom:.4rem;}
+  p{margin:.5rem 0;}
+  .prose{max-width:70ch;}
+  .dim{color:var(--text-dim);}
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  header.masthead{padding:48px 0 28px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid var(--border);}
+  .eyebrow{font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .subtitle{color:var(--text-dim); font-size:1.05rem; max-width:64ch;}
+  section{margin-top:44px;}
+  section > .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px;}
+  .verdict{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-top:18px; box-shadow:var(--shadow);}
+  .tile{background:var(--surface); padding:20px 18px; display:flex; flex-direction:column; gap:6px;}
+  .tile .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); font-weight:600;}
+  .tile .value{font-family:"IBM Plex Mono",monospace; font-size:1.7rem; font-weight:600; font-variant-numeric:tabular-nums;}
+  .tile .value.loss{color:var(--loss);} .tile .value.gain{color:var(--gain);} .tile .value.warn{color:var(--warn);}
+  .tile .sub{font-size:.78rem; color:var(--text-dim);}
+  .verdict-banner{margin-top:14px; padding:14px 18px; border-radius:10px; background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent); color:var(--text); font-size:.95rem; display:flex; gap:10px; align-items:flex-start;}
+  .verdict-banner .tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; background:var(--warn); color:var(--surface); padding:3px 8px; border-radius:5px; font-weight:600; flex:none;}
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow);}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:800px){.grid-2{grid-template-columns:1fr;}}
+  .metrics-mini{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;}
+  .mm{padding:10px 12px; background:var(--surface-2); border-radius:8px;}
+  .mm .k{font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); font-weight:600;}
+  .mm .v{font-family:"IBM Plex Mono",monospace; font-size:1.05rem; font-weight:600;}
+  .mm .v.loss{color:var(--loss);} .mm .v.gain{color:var(--gain);}
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:.88rem;}
+  thead th{text-align:right; padding:9px 12px; background:var(--surface-2); color:var(--text-dim); font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); white-space:nowrap; font-weight:600;}
+  thead th:first-child, tbody td:first-child{text-align:left;}
+  tbody td{padding:8px 12px; text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+  td.loss{color:var(--loss);} td.gain{color:var(--gain);}
+  tr.hl-row td{background:var(--gain-soft); font-weight:600;}
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px 14px; box-shadow:var(--shadow);}
+  .chart-card svg{width:100%; height:auto; display:block;}
+  .chart-caption{display:flex; justify-content:space-between; font-size:.76rem; color:var(--text-dim); margin-top:6px; font-family:"IBM Plex Mono",monospace;}
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:.72rem; font-family:"IBM Plex Mono",monospace; font-weight:600;}
+  .pill.loss{background:var(--loss-soft); color:var(--loss);}
+  .pill.warn{background:var(--warn-soft); color:var(--warn);}
+  .pill.gain{background:var(--gain-soft); color:var(--gain);}
+  .callout{border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0;}
+  .callout.gain{border-left-color:var(--gain); background:var(--gain-soft);}
+  .callout h4{margin:0 0 6px; font-family:"IBM Plex Sans"; font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text);}
+  .flow{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:18px 0;}
+  .flow .step{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:10px 14px; font-size:.85rem; flex:1 1 140px; min-width:140px;}
+  .flow .step .n{font-family:"IBM Plex Mono",monospace; font-size:.68rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:3px;}
+  .flow .arrow{color:var(--text-dim); font-size:1.1rem; flex:none;}
+  ol.refine, ul.refine{padding-left:1.25rem;}
+  ol.refine li, ul.refine li{margin-bottom:.6rem;}
+  footer{margin-top:60px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-dim); font-size:.85rem;}
+  .filelist{font-family:"IBM Plex Mono",monospace; font-size:.82rem; background:var(--surface-2); border-radius:8px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Backtest report · Binance spot · 2023–2026 · third of three strategies tested</div>
+  <h1>Donchian Trend System</h1>
+  <p class="subtitle">The classic Turtle Trader approach, not a chart pattern: a price-structure breakout with no fixed profit target, only a trailing channel stop. Built specifically to fix what killed the first two strategies &mdash; both capped their winners right around where a real explosive move would start.</p>
+</header>
+
+<section>
+  <div class="section-head"><h2>The verdict</h2></div>
+  <div class="verdict">
+    <div class="tile"><div class="label">Total return (best variant)</div><div class="value loss">&minus;53.0%</div><div class="sub">1h, 75d/30d + regime filter, still a loss</div></div>
+    <div class="tile"><div class="label">Profit factor (best)</div><div class="value warn">0.854</div><div class="sub">closest to breakeven in this project</div></div>
+    <div class="tile"><div class="label">Breakeven win-rate gap</div><div class="value warn">&minus;1.1pp</div><div class="sub">smallest gap found across everything tested</div></div>
+    <div class="tile"><div class="label">Symbols profitable</div><div class="value warn">8 / 31</div><div class="sub">vs. 0 / 50 on both prior strategies</div></div>
+    <div class="tile"><div class="label">Profitable years</div><div class="value gain">2 of 4</div><div class="sub">2024 (PF 1.14) and 2026 (PF 1.76)</div></div>
+  </div>
+  <div class="verdict-banner">
+    <span class="tag">Result</span>
+    <span>Still net negative over the full 2023&ndash;2026 window &mdash; this is not "a working strategy" yet. A proper 6-point lookback sweep (not just two points) found a real sweet spot around 75&ndash;100 days that gets within 1.6&ndash;2.5 percentage points of breakeven &mdash; the closest anything in this project has come. A hand-check confirmed its biggest winner (SUPERUSDT, Nov 2023&ndash;Jan 2024) was a genuine market move, not a bug, but that one trade also carries most of the positive side, an honest fragility given only ~32 symbols and 3.5 years. Pyramiding was implemented and tested properly (three add-spacings, full universe) and made results worse every time &mdash; reported as found, not tuned until it looked better.</span>
+  </div>
+</section>
+
+<section class="prose">
+  <h2>What changed, mechanically</h2>
+  <div class="flow">
+    <div class="step"><span class="n">Entry</span>Close breaks above the highest high of the prior N bars (20 or 55 days)</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">Initial stop</span>2&times;ATR(20) below entry &mdash; same 0.75% risk sizing as before</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">Exit</span>Only a trailing channel &mdash; lowest low of the prior M bars (10 or 20 days), ratchets up, never down</div>
+  </div>
+  <p>No fixed take-profit, no partial scale-out, no pattern-based invalidation, no volume-fade rule. Every one of those in CAE and the SMC system was, in effect, a way of capping the winners. This system has exactly one job for a winning trade: get out of its way until the trend itself turns.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Results across variants</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Variant</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Avg winner</th><th>Avg loser</th><th>Total return</th><th>Symbols profitable</th></tr></thead>
+      <tbody>
+        <tr class="hl-row"><td>1h · slow (55d/20d)</td><td>273</td><td>7.7%</td><td>0.408</td><td class="gain">+$246.41</td><td class="loss">&minus;$50.28</td><td class="loss">&minus;85.2%</td><td>10 / 34</td></tr>
+        <tr><td>1h · fast (20d/10d)</td><td>595</td><td>6.6%</td><td>0.451</td><td class="gain">+$196.29</td><td class="loss">&minus;$30.51</td><td class="loss">&minus;97.1%</td><td>6 / 40</td></tr>
+        <tr><td>15m · fast (20d/10d)</td><td>904</td><td>4.4%</td><td>0.217</td><td class="gain">+$67.54</td><td class="loss">&minus;$14.41</td><td class="loss">&minus;99.9%</td><td>4 / 42</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:10px;">Same pattern as both prior strategies: 1h beats 15m decisively (less noise, fewer whipsaws). New here: the slower system beats the faster one on cumulative return, and every variant's winner-to-loser ratio is in the 4&ndash;9&times; range &mdash; compare CAE 1h's roughly 2:1 and SMC 1h's roughly 0.6:1.</p>
+
+  <h3 style="margin-top:24px;">By year &mdash; 1h, slow variant</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Total PnL</th></tr></thead>
+      <tbody>
+        <tr><td>2023</td><td>44</td><td>4.5%</td><td class="loss">0.19</td><td class="loss">&minus;$3,459.79</td></tr>
+        <tr><td>2024</td><td>82</td><td>7.3%</td><td class="loss">0.43</td><td class="loss">&minus;$2,857.77</td></tr>
+        <tr><td>2025</td><td>61</td><td>4.9%</td><td class="loss">0.13</td><td class="loss">&minus;$1,551.00</td></tr>
+        <tr class="hl-row"><td>2026</td><td>86</td><td>11.6%</td><td class="gain">1.24</td><td class="gain">+$372.04</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout gain">
+    <h4>2026 was net profitable</h4>
+    <p style="margin:0;">First profitable year across all three strategies and every variant tested this session. 86 trades isn't a large sample and this could partly be a calmer, less crash-prone period rather than a permanently improving edge &mdash; but it's the first time the mechanism actually worked over a full year, not just in isolated trades.</p>
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 1h, fast (20d/10d)</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <polyline points="10.0,10.0 13.3,10.0 16.5,10.0 23.0,10.0 42.5,63.9 78.3,75.2 114.1,95.2 169.4,139.5 218.2,179.7 273.5,103.1 302.8,126.3 322.3,126.7 377.6,144.7 429.7,204.0 462.2,209.5 520.8,232.4 527.3,218.9 582.6,227.8 628.1,235.2 663.9,238.7 719.2,244.0 774.5,255.1 823.3,260.5 868.8,264.5 901.4,266.6 904.6,262.9 940.4,264.4 972.9,262.5 990.0,262.5"
+                  fill="none" stroke="var(--warn)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01</span><span>2026-08</span></div>
+    </div>
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 1h, slow (55d/20d)</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <polyline points="10.0,10.0 78.3,10.0 133.6,13.2 195.5,46.6 234.5,78.8 273.5,78.3 322.3,110.3 341.8,91.3 413.4,101.9 462.2,110.3 507.7,163.7 546.8,177.7 624.9,184.3 693.2,202.9 732.2,204.4 787.5,217.8 833.0,225.9 894.9,230.9 907.9,216.3 950.2,219.7 990.0,231.5"
+                  fill="none" stroke="var(--gain)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01</span><span>2026-08</span></div>
+    </div>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:8px;">Both curves lose money overall but neither collapses to zero the way CAE and SMC did &mdash; the slow variant's drawdown flattens out and even climbs in the later stretch (2026). SUPERUSDT alone contributed +$2,492 to the fast variant on its own &mdash; a single trend trade that ran, exactly the fat-tail capture this design targets.</p>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>Read this honestly</h2></div>
+  <p>This is real progress, not a solved problem. The mechanism is doing what it was built to do &mdash; win rate is still low (5&ndash;12%, as expected for trend-following) but winners are now multiples of losers instead of comparable to them or smaller. The 2023 period is dragging every variant into a loss; strip it out and the picture is a lot closer to breakeven, and 2026 alone is already there. Whether that reflects a genuinely improving edge or a less brutal, lower-variance market regime in the more recent data isn't something I can distinguish with confidence from three years of one universe.</p>
+  <p>What I can say concretely: of the three fundamentally different approaches tried on this exact universe &mdash; buy the breakout (CAE), buy the retracement after a stop-hunt (SMT+FVG), and buy the trend with no cap on the winner (this one) &mdash; only this one shows the shape of a real edge starting to emerge.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Follow-up session: lookback sweep &amp; pyramiding</h2></div>
+  <div class="panel">
+    <p>Ran a proper 6-point sweep of entry/exit lookback pairs on 1h (fast to very slow), rather than just the two points reported above.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Entry / Exit</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Return</th><th>Breakeven gap</th><th>Profitable syms</th></tr></thead>
+        <tbody>
+          <tr><td>20d / 10d</td><td>595</td><td>6.55%</td><td class="loss">0.451</td><td class="loss">&minus;97.12%</td><td class="loss">&minus;6.9pp</td><td>6/40</td></tr>
+          <tr><td>35d / 15d</td><td>376</td><td>6.91%</td><td class="loss">0.732</td><td class="loss">&minus;81.68%</td><td class="loss">&minus;2.3pp</td><td>5/37</td></tr>
+          <tr><td>55d / 20d</td><td>273</td><td>7.69%</td><td class="loss">0.408</td><td class="loss">&minus;85.19%</td><td class="loss">&minus;9.3pp</td><td>10/34</td></tr>
+          <tr class="hl-row"><td>75d / 30d</td><td>205</td><td>6.83%</td><td class="warn">0.795</td><td class="loss">&minus;59.83%</td><td class="warn">&minus;1.6pp</td><td>7/32</td></tr>
+          <tr><td>100d / 40d</td><td>143</td><td>7.69%</td><td class="warn">0.738</td><td class="loss">&minus;52.86%</td><td class="warn">&minus;2.5pp</td><td>6/32</td></tr>
+          <tr><td>130d / 50d</td><td>136</td><td>5.88%</td><td class="loss">0.386</td><td class="loss">&minus;66.92%</td><td class="loss">&minus;8.0pp</td><td>3/30</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;">Not monotonic the way the earlier two-point comparison suggested &mdash; there's a sweet spot around <strong>75&ndash;100 days</strong> (profit factor 0.74&ndash;0.80, within 1.6&ndash;2.5 percentage points of breakeven win rate, the closest any configuration in this whole project has come), falling off again at both faster and much slower settings. Trade counts shrink a lot at the slow end (136&ndash;143 trades), so this needs a wider universe or longer history before it's fully trustworthy, but it's a real, meaningfully better result than what was reported above.</p>
+
+    <div class="callout warn">
+      <h4>Stress test: one trade did most of the work</h4>
+      <p style="margin:0;">At 75d/30d, SUPERUSDT alone contributed +$4,584 of the positive side &mdash; almost entirely from a single trade: entered Nov 11 2023 at $0.1021, exited Jan 3 2024 after a 53-day hold, +$7,221 (a 369% gain). I checked this by hand against the raw daily price data before trusting it: SUPER genuinely rallied from $0.10 to $0.77 over six weeks in the real Nov 2023&ndash;Jan 2024 altcoin rally, a smooth, gradual move with no discontinuous jumps &mdash; not a data glitch. So the mechanism is doing exactly what it's designed to do. But it also means this result currently rests heavily on one real event happening once in 3.5 years across 32 symbols. That's an honest fragility, not a disqualifying one &mdash; it's what a fat-tail-dependent strategy is supposed to look like with a limited sample, but it means the 75d/30d number should be read as "the mechanism works" more than "this exact configuration is proven."</p>
+    </div>
+
+    <h3 style="margin-top:20px;">Pyramiding: tested, and it made things worse</h3>
+    <p>Implemented classic Turtle unit-adding (add a fixed-risk unit each time price advances by a multiple of ATR, up to 4 units, common trailing stop) and tested three add-spacing settings against the 75d/30d baseline (profit factor 0.795 with no pyramiding):</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Add trigger</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Return</th><th>Profitable syms</th></tr></thead>
+        <tbody>
+          <tr><td>No pyramiding (baseline)</td><td>205</td><td>6.83%</td><td class="warn">0.795</td><td class="loss">&minus;59.83%</td><td>7/32</td></tr>
+          <tr><td>Add every 0.5&times;ATR</td><td>205</td><td>6.34%</td><td class="loss">0.651</td><td class="loss">&minus;82.66%</td><td>6/32</td></tr>
+          <tr><td>Add every 1.5&times;ATR</td><td>205</td><td>6.34%</td><td class="loss">0.688</td><td class="loss">&minus;76.61%</td><td>7/32</td></tr>
+          <tr><td>Add every 3.0&times;ATR</td><td>205</td><td>5.85%</td><td class="loss">0.722</td><td class="loss">&minus;68.25%</td><td>7/32</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Every spacing tested made the result worse, not better &mdash; and first I caught a calibration problem worth naming: at the tightest spacing (0.5&times;ATR computed on hourly bars), the position frequently piled up all 4 units within a few hours of entry on volatile coins, which defeats the entire point of pyramiding (adding only once the market has proven the move, not immediately). Widening the spacing moved results back toward the no-pyramid baseline but never past it. Best-supported read: the extra fees paid per added unit, plus adding at progressively worse (higher) entry prices, outweighs the benefit of a larger position in this data. This directly contradicts the standard playbook expectation, and I'm reporting it exactly as found rather than continuing to tune it until something looked better.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Regime filter: a real, modest improvement</h2></div>
+  <div class="panel">
+    <p>Skip entries when price is below a floor percentage of its own trailing high (severe structural breakdown) &mdash; tested against the 75d/30d baseline (PF 0.795):</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Filter</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Return</th><th>Gap</th><th>Profitable syms</th></tr></thead>
+        <tbody>
+          <tr><td>No filter (baseline)</td><td>205</td><td>6.83%</td><td class="warn">0.795</td><td class="loss">&minus;59.83%</td><td class="warn">&minus;1.6pp</td><td>7/32</td></tr>
+          <tr class="hl-row"><td>180d lookback, 40% floor</td><td>191</td><td>7.33%</td><td class="warn">0.854</td><td class="loss">&minus;53.00%</td><td class="warn">&minus;1.1pp</td><td>8/31</td></tr>
+          <tr><td>180d lookback, 60% floor</td><td>197</td><td>6.60%</td><td class="loss">0.371</td><td class="loss">&minus;80.08%</td><td class="loss">&minus;9.4pp</td><td>6/31</td></tr>
+          <tr><td>365d lookback, 40% floor</td><td>158</td><td>5.70%</td><td class="loss">0.710</td><td class="loss">&minus;49.67%</td><td class="loss">&minus;2.1pp</td><td>3/24</td></tr>
+          <tr><td>365d lookback, 60% floor</td><td>110</td><td>6.36%</td><td class="loss">0.464</td><td class="loss">&minus;49.12%</td><td class="loss">&minus;6.4pp</td><td>4/22</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;">A loose filter (180-day lookback, only excluding symbols already below 40% of that high) is the best result in this project so far: PF 0.854, gap down to 1.1pp. A stricter filter (60% floor) is much worse &mdash; it screens out real developing trends along with the broken symbols, same lesson as the pyramiding result: more filtering isn't automatically better. Self-checked against per-year and per-symbol breakdowns: now <strong>two</strong> profitable years (2024 PF 1.14, 2026 PF 1.76, both better than the unfiltered version) and 8/31 symbols profitable. SUPERUSDT is still the largest single contributor (+$4,679) at almost the same magnitude as before &mdash; this filter improved the rest of the trades' quality, it didn't reduce dependence on that one big winner. That concentration caveat stands.</p>
+  </div>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>Where I'd take this next</h2></div>
+  <ol class="refine">
+    <li><strong>Push the lookback search further around 75&ndash;100 days</strong> and on a wider universe &mdash; this is now the single most promising lead in the whole project, but the trade count is thin enough (136&ndash;205) that it needs more symbols or more history before it's trustworthy rather than more parameter tuning on the same 50 coins.</li>
+    <li><strong>Do not pursue pyramiding further</strong> as implemented &mdash; it was tested properly (three spacings, full universe, compared to a clean baseline) and consistently hurt results. A different position-management idea is needed for "let winners run," not this one.</li>
+    <li><strong>Regime filter: tested and kept.</strong> A loose 180-day/40%-floor version is now part of the best configuration (PF 0.854). A stricter 60%-floor version was tested and made things much worse &mdash; don't tighten it further without re-testing.</li>
+    <li><strong>Walk-forward validation</strong> instead of one static parameter set over the whole window &mdash; 2024 and 2026 were profitable years, 2023 and 2025 were not, which looks more like market regime than a monotonic learning curve. Not yet tested.</li>
+    <li><strong>Widen the universe or extend the history</strong> before trusting any single configuration further &mdash; a strategy that depends on rare, large winners needs more than 32&ndash;50 symbols and ~3.5 years to distinguish real edge from one lucky trade.</li>
+  </ol>
+</section>
+
+<footer>
+  <p><strong>Code &amp; data</strong> at <code>cae-strategy-backtest/src/</code>: <code>trend_signals.py</code> (Donchian channel + ATR), <code>backtest_trend.py</code> (portfolio engine), <code>run_trend_backtest.py</code> (orchestration, <code>--system 1</code> or <code>2</code>). Same universe, cost model, and risk sizing as CAE and the SMC study.</p>
+  <div class="filelist">
+    <span>results/trend_trades_{15m,1h}_sys{1,2}.csv &mdash; full trade logs</span>
+    <span>results/trend_equity_{15m,1h}_sys{1,2}.csv &mdash; equity curves</span>
+  </div>
+</footer>
+
+</div>

@@ -1,0 +1,258 @@
+<title>Liquidity Sweep &amp; FVG</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f3f4f7; --surface:#ffffff; --surface-2:#eef0f4; --border:#d7dbe3;
+    --text:#1b1f2a; --text-dim:#5b6272;
+    --accent:#2f7d7d; --accent-soft:#e4f0ef;
+    --loss:#b3402f; --loss-soft:#fbe9e6;
+    --gain:#2f7a4f; --gain-soft:#e8f4ec;
+    --warn:#a6721f; --warn-soft:#faf1df;
+    --shadow: 0 1px 2px rgba(20,24,34,0.06), 0 8px 24px -12px rgba(20,24,34,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+      --text:#e7eaf1; --text-dim:#939bad;
+      --accent:#63bdb8; --accent-soft:#182b2c;
+      --loss:#e2685a; --loss-soft:#2c1a19;
+      --gain:#7bc496; --gain-soft:#16261c;
+      --warn:#d8a54e; --warn-soft:#2b2313;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+    --text:#e7eaf1; --text-dim:#939bad;
+    --accent:#63bdb8; --accent-soft:#182b2c;
+    --loss:#e2685a; --loss-soft:#2c1a19;
+    --gain:#7bc496; --gain-soft:#16261c;
+    --warn:#d8a54e; --warn-soft:#2b2313;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; font-size:16px; line-height:1.6; margin:0; padding:0 20px 80px;}
+  .wrap{max-width:1080px; margin:0 auto;}
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; font-weight:600; margin:0;}
+  h1{font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; letter-spacing:-0.01em;}
+  h2{font-size:1.5rem; margin-bottom:.25rem;}
+  h3{font-size:1.1rem; margin-bottom:.4rem;}
+  p{margin:.5rem 0;}
+  .prose{max-width:70ch;}
+  .dim{color:var(--text-dim);}
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  header.masthead{padding:48px 0 28px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid var(--border);}
+  .eyebrow{font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .subtitle{color:var(--text-dim); font-size:1.05rem; max-width:64ch;}
+  section{margin-top:44px;}
+  section > .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px;}
+  .verdict{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-top:18px; box-shadow:var(--shadow);}
+  .tile{background:var(--surface); padding:20px 18px; display:flex; flex-direction:column; gap:6px;}
+  .tile .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); font-weight:600;}
+  .tile .value{font-family:"IBM Plex Mono",monospace; font-size:1.7rem; font-weight:600; font-variant-numeric:tabular-nums;}
+  .tile .value.loss{color:var(--loss);}
+  .tile .sub{font-size:.78rem; color:var(--text-dim);}
+  .verdict-banner{margin-top:14px; padding:14px 18px; border-radius:10px; background:var(--loss-soft); border:1px solid color-mix(in srgb, var(--loss) 35%, transparent); color:var(--text); font-size:.95rem; display:flex; gap:10px; align-items:flex-start;}
+  .verdict-banner .tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; background:var(--loss); color:var(--surface); padding:3px 8px; border-radius:5px; font-weight:600; flex:none;}
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow);}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:800px){.grid-2{grid-template-columns:1fr;}}
+  .metrics-mini{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;}
+  .mm{padding:10px 12px; background:var(--surface-2); border-radius:8px;}
+  .mm .k{font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); font-weight:600;}
+  .mm .v{font-family:"IBM Plex Mono",monospace; font-size:1.05rem; font-weight:600;}
+  .mm .v.loss{color:var(--loss);} .mm .v.gain{color:var(--gain);}
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:.88rem;}
+  thead th{text-align:right; padding:9px 12px; background:var(--surface-2); color:var(--text-dim); font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); white-space:nowrap; font-weight:600;}
+  thead th:first-child, tbody td:first-child{text-align:left;}
+  tbody td{padding:8px 12px; text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+  td.loss{color:var(--loss);} td.gain{color:var(--gain);}
+  tr.base-row td{background:var(--accent-soft); font-weight:600;}
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px 14px; box-shadow:var(--shadow);}
+  .chart-card svg{width:100%; height:auto; display:block;}
+  .chart-caption{display:flex; justify-content:space-between; font-size:.76rem; color:var(--text-dim); margin-top:6px; font-family:"IBM Plex Mono",monospace;}
+  .exit-bars{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+  .exit-row{display:grid; grid-template-columns:130px 1fr 90px; align-items:center; gap:12px;}
+  .exit-row .name{font-size:.85rem; color:var(--text-dim);}
+  .exit-track{height:10px; background:var(--surface-2); border-radius:6px; overflow:hidden;}
+  .exit-fill{height:100%; border-radius:6px;}
+  .exit-row .pct{font-family:"IBM Plex Mono",monospace; font-size:.82rem; text-align:right;}
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:.72rem; font-family:"IBM Plex Mono",monospace; font-weight:600;}
+  .pill.loss{background:var(--loss-soft); color:var(--loss);}
+  .callout{border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0;}
+  .callout h4{margin:0 0 6px; font-family:"IBM Plex Sans"; font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text);}
+  .flow{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:18px 0;}
+  .flow .step{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:10px 14px; font-size:.85rem; flex:1 1 150px; min-width:150px;}
+  .flow .step .n{font-family:"IBM Plex Mono",monospace; font-size:.68rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:3px;}
+  .flow .arrow{color:var(--text-dim); font-size:1.1rem; flex:none;}
+  ol.refine, ul.refine{padding-left:1.25rem;}
+  ol.refine li, ul.refine li{margin-bottom:.6rem;}
+  footer{margin-top:60px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-dim); font-size:.85rem;}
+  .filelist{font-family:"IBM Plex Mono",monospace; font-size:.82rem; background:var(--surface-2); border-radius:8px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Backtest report · Binance spot · 2023–2026 · companion to the CAE study</div>
+  <h1>Liquidity Sweep &amp; Fair Value Gap</h1>
+  <p class="subtitle">A quantitative translation of three ICT/SMC concepts &mdash; equal-lows liquidity pools, SMT divergence against BTC, and Fair Value Gaps &mdash; into an entry mechanic built to buy the shakeout <em>before</em> a low-cap's explosive leg, rather than chasing the breakout candle after it. Backtested on the same 50 real Binance low-cap pairs, full history, both timeframes.</p>
+</header>
+
+<section>
+  <div class="section-head"><h2>The verdict</h2></div>
+  <div class="verdict">
+    <div class="tile"><div class="label">Total return (15m)</div><div class="value loss">&minus;100.00%</div><div class="sub">$10,000 &rarr; ~$0</div></div>
+    <div class="tile"><div class="label">Total return (1h)</div><div class="value loss">&minus;99.99999%</div><div class="sub">$10,000 &rarr; $0.0000092</div></div>
+    <div class="tile"><div class="label">Win rate</div><div class="value loss">3.3% / 8.3%</div><div class="sub">15m / 1h</div></div>
+    <div class="tile"><div class="label">Profit factor</div><div class="value loss">0.02 / 0.05</div><div class="sub">1.0 = breakeven</div></div>
+    <div class="tile"><div class="label">Symbols profitable</div><div class="value loss">0 / 50</div><div class="sub">both timeframes</div></div>
+  </div>
+  <div class="verdict-banner">
+    <span class="tag">Result</span>
+    <span>Also a comprehensive account wipeout, on both timeframes. The dominant failure mode is different from CAE's (here it's <strong>fvg_invalidated</strong> at ~81% of exits, not a false-breakout close) but the outcome is the same order of magnitude. A volume-confirmation refinement on the displacement candle helped in relative terms &mdash; but nowhere near enough. Full breakdown below, plus what this means read against the CAE result.</span>
+  </div>
+</section>
+
+<section class="prose">
+  <h2>The mechanic, quantified</h2>
+  <p>Every rule below is price-only (BTC is used as a reference series for SMT, not an indicator) plus one optional volume filter on the displacement candle &mdash; nothing lagging, no oscillators.</p>
+  <div class="flow">
+    <div class="step"><span class="n">1 · Key level</span>Cluster fractal swing lows into equal-lows liquidity pools (within 0.6% of each other)</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">2 · Sweep</span>Price wicks below the pool, closes back above it within 3 bars</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">3 · SMT divergence</span>BTC does <em>not</em> make its own corresponding new low in the same window</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">4 · FVG forms</span>A bullish 3-candle imbalance appears within the next 20 bars</div>
+    <span class="arrow">&rarr;</span>
+    <div class="step"><span class="n">5 · Entry</span>Limit fill at the FVG midpoint on retracement, within a 40-bar window</div>
+  </div>
+  <p class="dim" style="font-size:.9rem;">Stop sits below the sweep low (ATR-buffered); target is the nearest confirmed opposing swing high that clears a 1.5R minimum (setups below that bar are skipped, not force-fit &mdash; an early sanity check caught several setups where the nearest target was <em>closer</em> than the stop, which would have been a guaranteed-negative-expectancy trade by construction). Once the target partial-fills, the remainder trails on the most recent confirmed swing low &mdash; structure, not an ATR multiple.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Baseline results</h2></div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>15-minute</h3>
+      <span class="pill loss">&minus;100.00% return</span>
+      <div class="metrics-mini">
+        <div class="mm"><div class="k">Trades</div><div class="v">14,891</div></div>
+        <div class="mm"><div class="k">Win rate</div><div class="v loss">3.34%</div></div>
+        <div class="mm"><div class="k">Profit factor</div><div class="v loss">0.024</div></div>
+        <div class="mm"><div class="k">Avg winner</div><div class="v gain">+$0.48*</div></div>
+        <div class="mm"><div class="k">Avg loser</div><div class="v loss">&minus;$0.69*</div></div>
+        <div class="mm"><div class="k">Max drawdown</div><div class="v loss">&minus;100.0%</div></div>
+        <div class="mm"><div class="k">Avg hold</div><div class="v">2.73 h</div></div>
+        <div class="mm"><div class="k">Sharpe</div><div class="v loss">&minus;128.3</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>1-hour</h3>
+      <span class="pill loss">&minus;99.99999% return</span>
+      <div class="metrics-mini">
+        <div class="mm"><div class="k">Trades</div><div class="v">3,561</div></div>
+        <div class="mm"><div class="k">Win rate</div><div class="v loss">8.28%</div></div>
+        <div class="mm"><div class="k">Profit factor</div><div class="v loss">0.051</div></div>
+        <div class="mm"><div class="k">Avg winner</div><div class="v gain">+$1.78</div></div>
+        <div class="mm"><div class="k">Avg loser</div><div class="v loss">&minus;$3.14</div></div>
+        <div class="mm"><div class="k">Max drawdown</div><div class="v loss">&minus;100.0%</div></div>
+        <div class="mm"><div class="k">Avg hold</div><div class="v">10.04 h</div></div>
+        <div class="mm"><div class="k">Sharpe</div><div class="v loss">&minus;31.7</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 1h</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <path d="M 10.0,270 L 10.0,10.0 L 13.3,43.4 L 16.5,55.8 L 19.8,61.2 L 23.0,74.5 L 26.3,81.7 L 29.5,87.3 L 32.8,90.5 L 36.0,93.5 L 39.3,105.2 L 42.5,126.1 L 45.8,135.9 L 49.0,145.9 L 52.3,151.9 L 55.5,153.1 L 58.8,167.2 L 62.1,174.8 L 65.3,180.6 L 68.6,184.0 L 71.8,190.7 L 75.1,195.7 L 100,222.4 L 150,251.9 L 200,263.4 L 300,268.9 L 400,269.9 L 500,270.0 L 990.0,270.0 L 990.0,270 Z"
+              fill="var(--loss)" opacity="0.12" stroke="none"/>
+        <polyline points="10.0,10.0 13.3,43.4 16.5,55.8 19.8,61.2 23.0,74.5 26.3,81.7 29.5,87.3 32.8,90.5 36.0,93.5 39.3,105.2 42.5,126.1 45.8,135.9 49.0,145.9 52.3,151.9 55.5,153.1 58.8,167.2 62.1,174.8 65.3,180.6 68.6,184.0 71.8,190.7 75.1,195.7 78.3,195.7 81.6,196.3 84.9,201.6 88.1,209.5 91.4,216.2 94.6,220.4 97.9,222.4 101.1,226.2 104.4,229.7 107.6,231.9 110.9,234.5 114.1,235.5 117.4,236.9 120.6,240.2 123.9,241.0 127.1,243.5 130.4,244.0 133.6,247.3 136.9,247.9 140.2,248.7 143.4,249.4 146.7,250.0 149.9,251.9 153.2,253.5 156.4,254.4 159.7,255.8 162.9,256.6 166.2,257.2 169.4,257.8 172.7,258.1 175.9,258.5 179.2,259.1 182.4,260.1 185.7,260.5 188.9,261.3 192.2,261.6 195.5,262.1 198.7,262.5 202.0,263.4 208.5,264.0 218.2,265.0 228.0,265.7 244.2,266.4 260.5,267.0 280.0,267.8 300,268.9 330,269.4 360,269.7 400,269.9 450,270.0 500,270.0 600,270.0 700,270.0 800,270.0 900,270.0 990.0,270.0"
+                  fill="none" stroke="var(--loss)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01</span><span>2026-08</span></div>
+    </div>
+    <div class="chart-card">
+      <h3 style="font-size:.95rem;">Equity curve &mdash; 15m</h3>
+      <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="10" x2="990" y2="10" stroke="var(--border)" stroke-width="1"/>
+        <line x1="10" y1="270" x2="990" y2="270" stroke="var(--border)" stroke-width="1"/>
+        <text x="12" y="24" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$10,000</text>
+        <text x="12" y="264" fill="var(--text-dim)" font-family="IBM Plex Mono" font-size="11">$0</text>
+        <path d="M 10.0,270 L 10.0,10.0 L 13.3,66.1 L 16.5,112.0 L 19.8,143.5 L 23.0,173.1 L 26.3,187.2 L 29.6,200.4 L 32.8,215.5 L 36.1,220.3 L 39.3,231.2 L 60,261 L 80,267 L 120,269.8 L 200,270.0 L 990.0,270.0 L 990.0,270 Z"
+              fill="var(--loss)" opacity="0.12" stroke="none"/>
+        <polyline points="10.0,10.0 13.3,66.1 16.5,112.0 19.8,143.5 23.0,173.1 26.3,187.2 29.6,200.4 32.8,215.5 36.1,220.3 39.3,231.2 42.6,242.3 45.9,247.8 49.1,251.3 52.4,255.5 55.7,257.4 58.9,260.2 62.2,262.4 65.5,264.3 68.7,265.5 72.0,266.5 75.3,267.3 78.5,267.6 81.8,268.0 85.0,268.3 88.3,268.7 91.6,268.9 98.1,269.2 107.9,269.5 120.9,269.8 140.5,269.9 160,270.0 250,270.0 400,270.0 600,270.0 800,270.0 990.0,270.0"
+                  fill="none" stroke="var(--loss)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="chart-caption"><span>2023-01</span><span>2026-08</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Root cause: the FVG is being violated, not respected</h2></div>
+  <div class="panel">
+    <div class="exit-bars">
+      <div class="exit-row"><span class="name">FVG invalidated (1h)</span><div class="exit-track"><div class="exit-fill" style="width:82.3%; background:var(--loss);"></div></div><span class="pct">82.3%</span></div>
+      <div class="exit-row"><span class="name">Hard stop (1h)</span><div class="exit-track"><div class="exit-fill" style="width:16.8%; background:var(--text-dim);"></div></div><span class="pct">16.8%</span></div>
+      <div class="exit-row"><span class="name">FVG invalidated (15m)</span><div class="exit-track"><div class="exit-fill" style="width:80.6%; background:var(--loss);"></div></div><span class="pct">80.6%</span></div>
+      <div class="exit-row"><span class="name">Hard stop (15m)</span><div class="exit-track"><div class="exit-fill" style="width:19.3%; background:var(--text-dim);"></div></div><span class="pct">19.3%</span></div>
+    </div>
+    <p style="margin-top:16px;">Four in five trades end the same way: price fills the FVG, then keeps going &mdash; closing back below the gap's low bound instead of holding it as support. The entry thesis is "this imbalance represents real, unfinished demand that will hold on a retest." On this data, it usually doesn't. Sweep-and-reclaim plus BTC non-confirmation identifies <em>something</em> happening, but not reliably a genuine reversal &mdash; on thin low-cap books a sweep can just as easily be the first leg of continued distribution as it can be a shakeout.</p>
+    <h3 style="margin-top:18px;">Volume-confirmation refinement</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Variant</th><th>Timeframe</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>Avg loser</th></tr></thead>
+        <tbody>
+          <tr class="base-row"><td>Baseline</td><td>1h</td><td>3,561</td><td>8.28%</td><td class="loss">0.051</td><td class="loss">&minus;$3.14</td></tr>
+          <tr><td>+ Volume-confirmed displacement</td><td>1h</td><td>2,014</td><td>9.88%</td><td class="loss">0.070</td><td class="loss">&minus;$5.76</td></tr>
+          <tr class="base-row"><td>Baseline</td><td>15m</td><td>14,891</td><td>3.34%</td><td class="loss">0.024</td><td class="loss">&minus;$0.69</td></tr>
+          <tr><td>+ Volume-confirmed displacement</td><td>15m</td><td>10,317</td><td>4.75%</td><td class="loss">0.030</td><td class="loss">&minus;$1.02</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:.85rem; margin-top:10px;">Requiring the displacement candle to clear 1.5&times; its 20-bar average volume filters out weak imbalances and genuinely helps &mdash; win rate up 19&ndash;42% in relative terms, profit factor up 25&ndash;37%. <code>fvg_invalidated</code> is still ~82% of exits either way. This is a real, valid improvement; it just isn't close to enough on its own.</p>
+    <p><strong>0 of 50</strong> symbols were net profitable on either timeframe &mdash; systemic, same as CAE, not a few outliers.</p>
+  </div>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>Reading this against the CAE result</h2></div>
+  <p>This is the more useful finding than either backtest alone. Two structurally different, independently-designed price-action systems were built on this same universe:</p>
+  <ul class="refine">
+    <li><strong>CAE</strong> buys strength &mdash; a confirmed volume/range breakout out of a coil. It failed because ~46% of breakouts reversed almost immediately (spike-and-fade).</li>
+    <li><strong>Liquidity Sweep + FVG</strong> buys weakness &mdash; a retracement into a demand zone after a stop-hunt. It failed because ~81% of those demand zones got run through instead of holding.</li>
+  </ul>
+  <p>These are close to opposite entry philosophies, tested with different exit logic, different position-management, different indicators entirely &mdash; and they land in the same place: near-total loss, near-zero profit factor, zero profitable symbols out of fifty, both timeframes. That convergence is the signal. It's much more consistent with <strong>this specific universe being extremely difficult to trade long-only on pure price action</strong> &mdash; low-float order books thin enough that both breakouts and stop-hunts get faked constantly, in both directions &mdash; than with either rule set being individually miscalibrated. A parameter sweep already showed CAE has no rescue configuration; the volume filter here shows the same shape of result for this strategy.</p>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>Where I'd actually spend the next round</h2></div>
+  <ol class="refine">
+    <li><strong>Tighten what counts as a valid SMT divergence.</strong> The default threshold accepts BTC failing to make a new low by any margin at all, however small &mdash; which happens often by chance in a broader downtrend. Requiring BTC to hold meaningfully above its prior low (not just marginally) should cut a lot of low-conviction signals.</li>
+    <li><strong>Require confirmation before the fill, not just at the fill.</strong> Right now entry is a pure limit order at the FVG midpoint &mdash; the first touch, no reaction required. Waiting for a bar to close back above the FVG's low after tagging it (trading a touch-and-hold instead of a touch alone) directly targets the 81% invalidation rate, at the cost of worse average entry price.</li>
+    <li><strong>Test a peer/basket reference instead of BTC.</strong> BTC's volatility character is very different from a low-float altcoin's; a sector-relative or equal-weighted low-cap basket might be a tighter, more meaningful "smart money" comparison than the market benchmark.</li>
+    <li><strong>Cross this with the CAE finding rather than iterating further blind.</strong> Given two independent approaches both failed the same way, the next highest-value step may be diagnosing the underlying market microstructure itself (wash-trading prevalence, book depth, delisting/rug rates in this cap band) before building a third price-action variant on the same universe.</li>
+  </ol>
+</section>
+
+<footer>
+  <p><strong>Code &amp; data</strong> at <code>cae-strategy-backtest/src/</code>: <code>smc_signals.py</code> (swing/pool/FVG primitives), <code>smc_setups.py</code> (the sweep&rarr;SMT&rarr;FVG state machine), <code>backtest_smc.py</code> (portfolio engine), <code>run_smc_backtest.py</code> (orchestration). Same universe, same cost model, same risk sizing as the CAE study.</p>
+  <div class="filelist">
+    <span>results/smc_trades_15m.csv, smc_trades_1h.csv &mdash; full trade logs</span>
+    <span>results/smc_equity_15m.csv, smc_equity_1h.csv &mdash; equity curves</span>
+  </div>
+</footer>
+
+</div>
