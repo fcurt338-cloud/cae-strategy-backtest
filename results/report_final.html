@@ -90,7 +90,7 @@
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">7</div><div class="sub">9 configurations counting both directions</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">8</div><div class="sub">10 configurations counting both directions</div></div>
     <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">every one fails out-of-sample</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
@@ -150,6 +150,28 @@
   <div class="callout">
     <h4>Why the ensemble test mattered</h4>
     <p style="margin:0;">Each of momentum, funding, and order-flow failed alone -- a reasonable hypothesis was that each carries a little real signal buried in noise, and requiring all three to agree (strict intersection, not a blended average that lets one strong signal compensate for two weak ones) would filter the noise out. It didn't: agreement filtering at both a 50th and 66th percentile threshold still failed every walk-forward fold. That rules out "the individual signals needed each other" as an explanation, which is a meaningfully stronger conclusion than any single test alone.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Eighth test: the new-listing effect (event study)</h2></div>
+  <div class="panel">
+    <p>Mechanically different from the seven ranking-based tests above: not a rolling cross-sectional score, but an event study aligned to each symbol's own listing date, measuring the average forward return starting D days after listing for a range of D and holding periods.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Days since listing</th><th>7d fwd mean</th><th>7d fwd median</th><th>% positive</th><th>14d fwd mean</th><th>14d fwd median</th><th>% positive</th></tr></thead>
+        <tbody>
+          <tr><td>0 (at listing)</td><td class="loss">&minus;15.83%</td><td class="loss">&minus;3.74%</td><td class="loss">44.0%</td><td class="loss">&minus;13.41%</td><td class="loss">&minus;7.51%</td><td class="loss">38.0%</td></tr>
+          <tr><td>7</td><td class="gain">+2.42%</td><td class="gain">+1.73%</td><td>58.0%</td><td class="loss">&minus;2.03%</td><td class="loss">&minus;5.74%</td><td class="loss">42.0%</td></tr>
+          <tr><td>21</td><td class="gain">+2.78%</td><td class="gain">+4.21%</td><td>60.0%</td><td>+0.49%</td><td>+0.96%</td><td>52.1%</td></tr>
+          <tr><td>42</td><td class="gain">+1.97%</td><td class="gain">+2.70%</td><td>57.4%</td><td>&minus;0.20%</td><td>+0.93%</td><td>53.3%</td></tr>
+          <tr><td>63</td><td class="loss">&minus;5.69%</td><td class="loss">&minus;3.97%</td><td class="loss">34.9%</td><td class="loss">&minus;4.86%</td><td class="loss">&minus;2.54%</td><td>42.1%</td></tr>
+          <tr><td>84</td><td class="loss">&minus;2.99%</td><td class="loss">&minus;1.95%</td><td>42.1%</td><td>&minus;1.61%</td><td>+1.98%</td><td>57.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;"><strong>One real, consistent finding:</strong> day 0 (the instant a coin lists) is reliably bad across every holding period tested (3/7/14/21 days) &mdash; mean forward returns &minus;5% to &minus;18%, worsening with longer holds, only 32&ndash;46% of listings positive. That's a genuine, structural "initial pump fade" pattern, not noise. Everything else in this project already excludes the first 14 days post-listing (a filter built in from the start), so this confirms that choice was right rather than opening new ground on the seven strategies above.</p>
+    <p>Past day 14, no clean recovery window emerges above noise &mdash; returns oscillate negative-to-flat with no consistent pattern, tracking the same structural downward drift as the rest of this universe (recall: median buy-and-hold across all 50 symbols was &minus;63% over the full period). A real, honest result, and a genuinely different test &mdash; but not a new tradeable edge.</p>
   </div>
 </section>
 
