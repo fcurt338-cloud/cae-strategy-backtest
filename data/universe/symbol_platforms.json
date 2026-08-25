@@ -1,0 +1,152 @@
+{
+  "AI": {
+    "ethereum": "0x4d7078ddd6ccfed2f85db5b7d3ff16828d378d48",
+    "gensyn": "0x4e742319f6b0fec4afa504fc8ed3ceab0fb751a2"
+  },
+  "ALLO": {
+    "ethereum": "0x8408d45b61f5823298f19a09b53b7339c0280489",
+    "base": "0x032d86656db142138ac97d2c5c4e3766e8c0482d",
+    "binance-smart-chain": "0xcce5f304fd043d6a4e8ccb5376a4a4fb583b98d5"
+  },
+  "AMP": {
+    "ethereum": "0xff20817765cb7f73d4bde2e66e067e58d11095c2",
+    "near-protocol": "ff20817765cb7f73d4bde2e66e067e58d11095c2.factory.bridge.near",
+    "energi": "0xad7abe6f12f1059bdf48ae67bff92b00438ced95"
+  },
+  "BANK": {
+    "binance-smart-chain": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+  },
+  "BOME": {
+    "solana": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+  },
+  "COTI": {
+    "ethereum": "0xddb3422497e61e13543bea06989c0789117555c5"
+  },
+  "CRCLB": {
+    "binance-smart-chain": "0x80f3d493ebce97e343c53d29a137942416b4ffc0"
+  },
+  "DEXE": {
+    "ethereum": "0xde4ee8057785a7e8e800db58f9784845a5c2cbd6",
+    "binance-smart-chain": "0x6e88056e8376ae7709496ba64d37fa2f8015ce3e"
+  },
+  "EUL": {
+    "ethereum": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b",
+    "arbitrum-one": "0x462cd9e0247b2e63831c3189ae738e5e9a5a4b64",
+    "base": "0xa153ad732f831a79b5575fa02e793ec4e99181b0",
+    "binance-smart-chain": "0x2117e8b79e8e176a670c9fcf945d4348556bffad",
+    "unichain": "0xe9c43e09c5fa733bcc2aeaa96063a4a60147aa09",
+    "plasma": "0xca632fa58397391c750c13f935daa61abbe0baa6",
+    "sonic": "0x2117e8b79e8e176a670c9fcf945d4348556bffad",
+    "berachain": "0xeb9b5f4eb023ae754ff59a04c9c038d58606dac6",
+    "swellchain": "0x80ccfbec4b8c82265abdc226ad3df84c0726e7a3",
+    "tac": "0x38c043856a109066d64a60c82e07848a1c58e7dc",
+    "avalanche": "0x9ceed3a7f753608372eeab300486cc7c2f38ac68",
+    "bob-network": "0xde1763afa5eb658cffffd16835afeb47e7ac0b8d"
+  },
+  "GIGGLE": {
+    "binance-smart-chain": "0x20d6015660b3fe52e6690a889b5c51f69902ce0e"
+  },
+  "GOOGLB": {
+    "binance-smart-chain": "0x3f53de71c126bdabae20f9cd64848d317f6c3238"
+  },
+  "GPS": {
+    "base": "0x0c1dc73159e30c4b06170f2593d3118968a0dca5",
+    "binance-smart-chain": "0x9a4a67721573f2c9209dfff972c52be4e3f6642e"
+  },
+  "HEI": {
+    "ethereum": "0xf8f173e20e15f3b6cb686fb64724d370689de083",
+    "binance-smart-chain": "0xf8f173e20e15f3b6cb686fb64724d370689de083"
+  },
+  "HEMI": {
+    "ethereum": "0xeb964a1a6fab73b8c72a0d15c7337fa4804f484d",
+    "binance-smart-chain": "0x5ffd0eadc186af9512542d0d5e5eafc65d5afc5b",
+    "hemi": "0x99e3de3817f6081b2568208337ef83295b7f591d"
+  },
+  "HOME": {
+    "base": "0x4bfaa776991e85e5f8b1255461cbbd216cfc714f",
+    "binance-smart-chain": "0x4bfaa776991e85e5f8b1255461cbbd216cfc714f",
+    "solana": "J3umBWqhSjd13sag1E1aUojViWvPYA5dFNyqpKuX3WXj"
+  },
+  "ME": {
+    "solana": "MEFNBXixkEbait3xn9bkm8WsJzXtVsaJEn4c8Sam21u"
+  },
+  "MEGA": {
+    "megaeth": "0x28b7e77f82b25b95953825f1e3ea0e36c1c29861"
+  },
+  "MINA": {},
+  "MUB": {
+    "binance-smart-chain": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699"
+  },
+  "NVDAB": {
+    "binance-smart-chain": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436"
+  },
+  "ONG": {},
+  "ORDI": {
+    "ordinals": "b61b0172d95e266c18aea0c624db987e971a5d6d4ebc2aaed85da4642d635735i0",
+    "solana": "u9nmK5sQovm6ACVCQbbq8xUMpFqdPSYxdxVwXUX4sjY"
+  },
+  "PLUME": {
+    "ethereum": "0x4c1746a800d224393fe2470c70a35717ed4ea5f1",
+    "binance-smart-chain": "0x5afadcd1e8e3ca78ee2d37100102f2aec8bc0aa8"
+  },
+  "PROM": {
+    "ethereum": "0xfc82bb4ba86045af6f327323a46e80412b91b27d",
+    "binance-smart-chain": "0xaf53d56ff99f1322515e54fdde93ff8b3b7dafd5"
+  },
+  "RE": {
+    "ethereum": "0x526526528f35ac738177003b8773b402b8df8143"
+  },
+  "SCRT": {
+    "secret": "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek",
+    "osmosis": "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A"
+  },
+  "SENT": {
+    "ethereum": "0x56a3ba04e95d34268a19b2a4474dc979babdaf76"
+  },
+  "SKHYB": {
+    "binance-smart-chain": "0xca750ef65f295bbecd685abf54e82caf297bdb61"
+  },
+  "SNDKB": {
+    "binance-smart-chain": "0x3ee4df61bd4f867e349beae8bfe07bc31b4850fb"
+  },
+  "SPCXB": {
+    "binance-smart-chain": "0xbe9d156892e55e7154bcd3cb0fea677f9d3103e1"
+  },
+  "SPELL": {
+    "ethereum": "0x090185f2135308bad17527004364ebcc2d37e5f6",
+    "fantom": "0x468003b688943977e6130f4f68f23aad939a1040",
+    "arbitrum-one": "0x3e6648c5a70a150a88bce65f4ad4d506fe15d2af",
+    "avalanche": "0xce1bffbd5374dac86a2893119683f4911a2f7814"
+  },
+  "SPK": {
+    "ethereum": "0xc20059e0317de91738d13af027dfc4a50781b066"
+  },
+  "STORJ": {
+    "ethereum": "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac",
+    "harmony-shard-0": "0x266f341e33aa61c30c6a9af89314811a5b097cb4",
+    "energi": "0xcde71daaffb6a12d584f55777d4c9e9d3c353c1e"
+  },
+  "SUPER": {
+    "ethereum": "0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55",
+    "soneium": "0xf765356c901a064a74fa4560622f21c91048c3d7",
+    "base": "0x391359ab0ccef572dcac78f74e47d7c06db0b982",
+    "polygon-pos": "0xa1428174f516f527fafdd146b883bb4428682737",
+    "avalanche": "0x09fa58228bb791ea355c90da1e4783452b9bd8c3"
+  },
+  "TUT": {
+    "binance-smart-chain": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+  },
+  "XUSD": {
+    "ethereum": "0xc08e7e23c235073c6807c2efe7021304cb7c2815",
+    "binance-smart-chain": "0xf81ac2e1a0373dde1bce01e2fe694a9b7e3bfcb9",
+    "solana": "4UbvZiomFvXDnZSz6vdHiDNiHozH2ykTEqjhhbVHiv9z"
+  },
+  "ZEN": {
+    "base": "0xf43eb8de897fbc7f2502483b2bef7bb9ea179229",
+    "horizen": "0x57da2d504bf8b83ef304759d9f2648522d7a9280"
+  },
+  "ZK": {
+    "zksync": "0x5a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e",
+    "ethereum": "0x66a5cfb2e9c529f14fe6364ad1075df3a649c0a5"
+  }
+}

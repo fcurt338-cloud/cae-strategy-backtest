@@ -90,7 +90,7 @@
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">8</div><div class="sub">10 configurations counting both directions</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">9</div><div class="sub">including real on-chain data, not just OHLCV</div></div>
     <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">every one fails out-of-sample</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
@@ -172,6 +172,26 @@
     </div>
     <p style="margin-top:12px;"><strong>One real, consistent finding:</strong> day 0 (the instant a coin lists) is reliably bad across every holding period tested (3/7/14/21 days) &mdash; mean forward returns &minus;5% to &minus;18%, worsening with longer holds, only 32&ndash;46% of listings positive. That's a genuine, structural "initial pump fade" pattern, not noise. Everything else in this project already excludes the first 14 days post-listing (a filter built in from the start), so this confirms that choice was right rather than opening new ground on the seven strategies above.</p>
     <p>Past day 14, no clean recovery window emerges above noise &mdash; returns oscillate negative-to-flat with no consistent pattern, tracking the same structural downward drift as the rest of this universe (recall: median buy-and-hold across all 50 symbols was &minus;63% over the full period). A real, honest result, and a genuinely different test &mdash; but not a new tradeable edge.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Ninth test: on-chain activity (Etherscan Transfer events)</h2></div>
+  <div class="panel">
+    <p>The most genuinely different data source tested all night: weekly Transfer-event count and unique active-address count, fetched directly from Ethereum via Etherscan, for the 17 of 50 universe symbols with resolvable Ethereum contracts. Two metrics (transfer count, unique addresses) &times; two directions (activity surge = long the biggest jump vs. trailing baseline; activity fade = the opposite).</p>
+    <p><strong>This one initially looked like a real find</strong> &mdash; transfer-count/activity-surge returned <strong>+134% full-period, Sharpe +0.68</strong>, the only strategy all night with a positive full-period number before any scrutiny. Then the same walk-forward discipline applied to everything else:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Fold</th><th>Window</th><th>Return</th><th>Sharpe</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>2023</td><td class="loss">&minus;49.3%</td><td class="loss">&minus;0.03</td></tr>
+          <tr><td>2</td><td>2023&ndash;24</td><td class="loss">&minus;59.1%</td><td class="loss">&minus;0.15</td></tr>
+          <tr><td>3</td><td>2024&ndash;25</td><td class="loss">&minus;68.9%</td><td class="loss">&minus;0.56</td></tr>
+          <tr><td>4</td><td>2025&ndash;26</td><td class="gain">+15.6%</td><td class="gain">+0.60</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Three losing folds, one winning fold carrying the entire full-period aggregate &mdash; the identical pattern that sank the Donchian trend system's headline number earlier tonight. Checked what was actually driving fold 4: raw buy-and-hold return for every one of the 17 on-chain-tracked symbols over that window. <strong>Only one symbol was positive &mdash; ALLOUSDT, +54.8%. Every other one of the 17 lost between 18% and 92%.</strong> The fold's entire "win" is one coin's isolated rally in an otherwise uniformly bad stretch for this subset, not broad-based skill at reading on-chain activity. Same failure signature as the trend system's SUPERUSDT dependency, more extreme.</p>
   </div>
 </section>
 
