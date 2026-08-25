@@ -1,0 +1,189 @@
+<title>Six Strategies, Six Nulls</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f3f4f7; --surface:#ffffff; --surface-2:#eef0f4; --border:#d7dbe3;
+    --text:#1b1f2a; --text-dim:#5b6272;
+    --accent:#2f7d7d; --accent-soft:#e4f0ef;
+    --loss:#b3402f; --loss-soft:#fbe9e6;
+    --gain:#2f7a4f; --gain-soft:#e8f4ec;
+    --warn:#a6721f; --warn-soft:#faf1df;
+    --shadow: 0 1px 2px rgba(20,24,34,0.06), 0 8px 24px -12px rgba(20,24,34,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+      --text:#e7eaf1; --text-dim:#939bad;
+      --accent:#63bdb8; --accent-soft:#182b2c;
+      --loss:#e2685a; --loss-soft:#2c1a19;
+      --gain:#7bc496; --gain-soft:#16261c;
+      --warn:#d8a54e; --warn-soft:#2b2313;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141c; --surface:#171d29; --surface-2:#1e2531; --border:#2a3242;
+    --text:#e7eaf1; --text-dim:#939bad;
+    --accent:#63bdb8; --accent-soft:#182b2c;
+    --loss:#e2685a; --loss-soft:#2c1a19;
+    --gain:#7bc496; --gain-soft:#16261c;
+    --warn:#d8a54e; --warn-soft:#2b2313;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; font-size:16px; line-height:1.6; margin:0; padding:0 20px 80px;}
+  .wrap{max-width:1080px; margin:0 auto;}
+  h1,h2,h3{font-family:"Fraunces", Georgia, serif; text-wrap:balance; font-weight:600; margin:0;}
+  h1{font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; letter-spacing:-0.01em;}
+  h2{font-size:1.5rem; margin-bottom:.25rem;}
+  h3{font-size:1.1rem; margin-bottom:.4rem;}
+  p{margin:.5rem 0;}
+  .prose{max-width:72ch;}
+  .dim{color:var(--text-dim);}
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  header.masthead{padding:48px 0 28px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid var(--border);}
+  .eyebrow{font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .subtitle{color:var(--text-dim); font-size:1.05rem; max-width:66ch;}
+  section{margin-top:44px;}
+  section > .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px;}
+  .verdict{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-top:18px; box-shadow:var(--shadow);}
+  .tile{background:var(--surface); padding:20px 18px; display:flex; flex-direction:column; gap:6px;}
+  .tile .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); font-weight:600;}
+  .tile .value{font-family:"IBM Plex Mono",monospace; font-size:1.7rem; font-weight:600; font-variant-numeric:tabular-nums;}
+  .tile .value.loss{color:var(--loss);} .tile .value.gain{color:var(--gain);} .tile .value.warn{color:var(--warn);}
+  .tile .sub{font-size:.78rem; color:var(--text-dim);}
+  .verdict-banner{margin-top:14px; padding:14px 18px; border-radius:10px; background:var(--loss-soft); border:1px solid color-mix(in srgb, var(--loss) 35%, transparent); color:var(--text); font-size:.95rem; display:flex; gap:10px; align-items:flex-start;}
+  .verdict-banner .tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; background:var(--loss); color:var(--surface); padding:3px 8px; border-radius:5px; font-weight:600; flex:none;}
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 24px; box-shadow:var(--shadow);}
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin-top:10px;}
+  table{border-collapse:collapse; width:100%; min-width:680px; font-size:.88rem;}
+  thead th{text-align:right; padding:9px 12px; background:var(--surface-2); color:var(--text-dim); font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); white-space:nowrap; font-weight:600;}
+  thead th:first-child, tbody td:first-child{text-align:left;}
+  tbody td{padding:8px 12px; text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+  td.loss{color:var(--loss);} td.gain{color:var(--gain);}
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:.72rem; font-family:"IBM Plex Mono",monospace; font-weight:600;}
+  .pill.loss{background:var(--loss-soft); color:var(--loss);}
+  .pill.gain{background:var(--gain-soft); color:var(--gain);}
+  .callout{border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0;}
+  .callout.gain{border-left-color:var(--gain); background:var(--gain-soft);}
+  .callout h4{margin:0 0 6px; font-family:"IBM Plex Sans"; font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text);}
+  ol.refine, ul.refine{padding-left:1.25rem;}
+  ol.refine li, ul.refine li{margin-bottom:.6rem;}
+  .bug-list{display:flex; flex-direction:column; gap:10px; margin-top:10px;}
+  .bug{background:var(--surface-2); border-radius:8px; padding:12px 16px; font-size:.9rem;}
+  .bug .where{font-family:"IBM Plex Mono",monospace; font-size:.72rem; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:4px;}
+  footer{margin-top:60px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-dim); font-size:.85rem;}
+  .filelist{font-family:"IBM Plex Mono",monospace; font-size:.82rem; background:var(--surface-2); border-radius:8px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Consolidated final report · low-cap crypto strategy research · Binance, 2023–2026</div>
+  <h1>Six Strategies, Six Nulls</h1>
+  <p class="subtitle">A systematic search for a working systematic strategy on 50 low-cap Binance USDT pairs. Six mechanically distinct signal families, each rigorously backtested and walk-forward validated. None survive. That consistency is itself the finding.</p>
+</header>
+
+<section>
+  <div class="section-head"><h2>The verdict</h2></div>
+  <div class="verdict">
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">6</div><div class="sub">8 configurations counting both directions</div></div>
+    <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">every one fails out-of-sample</div></div>
+    <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
+    <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
+  </div>
+  <div class="verdict-banner">
+    <span class="tag">Result</span>
+    <span>Not one strategy across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, or order-flow imbalance shows a real, forward-usable edge on this universe. The failure is isolated to the signals themselves &mdash; the backtest framework was stress-tested with a perfect-foresight oracle under the identical cost model, which returned an (absurd, as intended) +84.6M%, ruling out "the costs are just too harsh" as the explanation.</span>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Everything tested</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Strategy</th><th>Mechanism</th><th>Full-period result</th><th>Walk-forward (4 folds)</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>CAE (coil breakout)</td><td>Volume dry-up + range contraction, breakout entry</td>
+          <td class="loss">PF 0.02&ndash;0.22</td><td class="loss">n/a &mdash; failed outright</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>SMT + Fair Value Gap</td><td>Liquidity sweep, BTC divergence, FVG retracement entry</td>
+          <td class="loss">PF 0.02&ndash;0.05</td><td class="loss">n/a &mdash; failed outright</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Donchian trend-following</td><td>Channel breakout, no fixed target, trailing stop only</td>
+          <td class="warn">PF 0.85 (looked promising)</td><td class="loss">2 of 3 folds PF &lt; 0.25</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Cross-sectional momentum</td><td>Rank by trailing return, hold top-K, rotate weekly</td>
+          <td class="loss">Sharpe +0.12 (full period)</td><td class="loss">4 of 4 folds negative Sharpe</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Funding rate &mdash; contrarian</td><td>Long most-negative funding (crowded-short squeeze)</td>
+          <td class="loss">Sharpe &minus;0.37 to &minus;0.93</td><td class="loss">4 of 4 folds negative</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Funding rate &mdash; carry</td><td>Long most-positive funding (momentum alignment)</td>
+          <td class="loss">Sharpe &minus;0.03 to &minus;0.14</td><td class="loss">4 of 4 folds negative</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Order-flow &mdash; aggressive buy</td><td>Long highest taker-buy ratio (sustained buy pressure)</td>
+          <td class="loss">Sharpe &minus;0.50 to &minus;1.24</td><td class="loss">4 of 4 folds negative</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+        <tr>
+          <td>Order-flow &mdash; sell fade</td><td>Long lowest taker-buy ratio (exhausted selling)</td>
+          <td class="loss">Sharpe &minus;0.45 to &minus;0.69</td><td class="loss">4 of 4 folds negative</td><td><span class="pill loss">Rejected</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:10px;">Universe: 50 low-cap ($1M&ndash;$100M) USDT pairs by volume, Binance spot, 2023&ndash;2026. Funding rate available for 37/50 (Binance perp listings); order-flow imbalance available for all 51 (50 + BTC). Every strategy used the same realistic cost model &mdash; 0.1% taker fee + 1.5% slippage per side &mdash; and the same 0.75%-of-equity risk sizing with a notional cap.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>The oracle check</h2></div>
+  <div class="panel">
+    <p>Before accepting "no edge anywhere" as the conclusion, the framework itself needed to be ruled out as the problem. A perfect-foresight oracle &mdash; ranking each week by the coin's <em>actual</em> forward return (impossible in real trading, pure calibration) &mdash; was run through the exact same cross-sectional engine, same costs, same position sizing:</p>
+    <div class="callout gain">
+      <h4>Oracle result</h4>
+      <p style="margin:0;"><strong>+84,615,761% total return</strong>, 74.2% hit rate, Sharpe 3.84, over the same 186 weekly periods and cost structure that sank every real strategy. This confirms the 0.1%+1.5% cost model does not structurally prevent profit at this rebalancing frequency &mdash; a strategy with genuine predictive skill would tear through these costs easily. The six real strategies failed because the signals themselves carry no real forward information here, not because the accounting is unfairly harsh.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Real bugs found and fixed along the way</h2></div>
+  <div class="bug-list">
+    <div class="bug"><span class="where">CAE / position sizing</span>On a tight structural stop, naive risk/stop-distance sizing could put 50%+ of equity into one trade. Fixed with a notional cap at equity &divide; max concurrent positions.</div>
+    <div class="bug"><span class="where">Trend system / breakout confirmation</span>A "2 consecutive closes above the coil high" filter was mathematically impossible by construction (the rolling reference level already included the prior bar). Caught before it silently produced zero trades and looked like a market finding.</div>
+    <div class="bug"><span class="where">Momentum / rebalancing cost</span>Full liquidate-and-rebuy every period was paying transaction costs on positions that hadn't even changed. Switching to partial rebalancing (trade only actual entries/exits) improved full-period return from &minus;99.9% to &minus;55.5% at the best setting &mdash; a real fix, though it didn't survive walk-forward either.</div>
+    <div class="bug"><span class="where">Funding rate fetch / OKX pagination</span>OKX's <code>before</code>/<code>after</code> pagination parameters are inverted from the intuitive reading (<code>before</code> returns newer records, <code>after</code> returns older). Silently fetched only recent data until caught and switched to Binance, which also solved OKX's harder 3-month retention limit on public funding history.</div>
+  </div>
+  <p class="dim" style="font-size:.85rem; margin-top:12px;">None of these bugs, once fixed, changed the ultimate verdict for their strategy. They're listed because finding and fixing them is what makes the negative results trustworthy rather than just "it didn't work" with unknown cause.</p>
+</section>
+
+<section class="prose">
+  <div class="section-head"><h2>What this actually means</h2></div>
+  <p>Six mechanically different approaches to reading price, volume, positioning, and order flow on this specific 50-coin low-cap universe, over this specific ~3.5-year window, show no edge that survives being tested honestly. That's a real, defensible, and useful result &mdash; not a failure of effort. A single null result could be a bad implementation; six independent nulls across genuinely different information sources, with the cost model separately validated as not the culprit, is a much stronger statement about this specific universe and this specific data.</p>
+  <p>It does <strong>not</strong> mean no edge exists anywhere in low-cap crypto. It means: not in OHLCV price action, not in cross-sectional relative strength, not in perpetual funding positioning, and not in taker order-flow imbalance, on this exact set of 50 coins, at daily-to-weekly rebalancing. Anything requiring different information entirely &mdash; on-chain wallet flow, order-book depth beyond what's public, or a genuinely different universe/timeframe with a larger sample &mdash; is untested, not disproven.</p>
+</section>
+
+<footer>
+  <p><strong>Code &amp; data</strong> at <code>cae-strategy-backtest/</code>, all pushed to <a href="https://github.com/fcurt338-cloud/cae-strategy-backtest">github.com/fcurt338-cloud/cae-strategy-backtest</a>. <code>PROGRESS_LOG.md</code> at the repo root has the full session-by-session history.</p>
+  <div class="filelist">
+    <span>src/backtest.py, strategy.py &mdash; CAE</span>
+    <span>src/smc_*.py, backtest_smc.py &mdash; SMT + FVG</span>
+    <span>src/trend_signals.py, backtest_trend.py, backtest_trend_pyramid.py &mdash; Donchian trend</span>
+    <span>src/momentum_signals.py, backtest_momentum.py &mdash; cross-sectional momentum</span>
+    <span>src/funding_signals.py, fetch_funding_binance.py &mdash; funding rate</span>
+    <span>src/orderflow_signals.py, fetch_orderflow.py &mdash; order-flow imbalance</span>
+    <span>src/wf_validation.py &mdash; walk-forward harness (trend system)</span>
+  </div>
+</footer>
+
+</div>
