@@ -1,5 +1,25 @@
 # Low-cap crypto trend-strategy research — progress log
 
+## CONCLUDED (2026-08-25, synced locally from cloud session cse_01Tda1apTJLKgThCCYZeRujN)
+
+**Final verdict: the Donchian trend system does not survive walk-forward validation or mark-to-market scrutiny. No configuration found across all three strategy families (CAE, SMC, Donchian trend) shows a genuine, robust, forward-usable edge. Do not restart this research direction without a genuinely new idea.**
+
+Walk-forward validation (3 rolling folds, select-on-trailing-data -> test-forward):
+
+| Test window | Selected config | Selection-window PF | OOS trades | OOS win rate | OOS profit factor |
+|---|---|---|---|---|---|
+| 2024 | 75d/30d, no filter | 2.07 | 66 | 3.0% | 0.211 |
+| 2025 | 35d/15d + filter | 0.88 | 76 | 1.3% | 0.094 |
+| 2026 (partial) | 35d/15d + filter | 0.70 | 95 | 9.5% | 1.193 |
+
+Control (fixed hindsight-best 75d/30d+filter config, no reselection, same 3 folds): PF 0.211, 0.153, 1.761 — nearly identical collapse. This rules out "bad selection" as the cause; the config itself doesn't generalize. It only looked good in aggregate because one good stretch outweighed two losing years -- textbook overfitting to hindsight.
+
+Mark-to-market check on the previously-reported headline result (75d/30d+filter, full period, PF 0.854): excluding the 4 positions still open at the data cutoff, PF drops to 0.693, win rate to 5.88%, and realized P&L on closed trades alone is -$5,076. Part of the earlier "closest to breakeven" number was unrealized marks on open positions, not completed round trips.
+
+Full writeup: https://claude.ai/code/artifact/0ad34114-7abf-44a6-90ab-84ff3fefbc92 (published from the cloud session; its own git commits did not push due to a GitHub App permissions gap on this repo -- informational only, not worth chasing given the negative conclusion).
+
+---
+
 Read this fully before doing anything. This is a continuing research project; you're picking it up mid-stream. The user is asleep and unreachable — work autonomously, do not wait for input.
 
 ## Setup
