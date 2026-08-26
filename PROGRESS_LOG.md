@@ -1,5 +1,19 @@
 # Low-cap crypto trend-strategy research — progress log
 
+## UPDATE (2026-08-25): a genuinely different strategy family found a real lead — pairs trading on majors
+
+The "CONCLUDED" verdict directly below is specific to the low-cap universe and the CAE/SMC/Donchian-trend strategy families (all directional, long-only). After that verdict, research pivoted to a structurally different approach on a different universe: **market-neutral pairs trading (stat-arb) on the 29 largest-cap USDT perps** (BTC, ETH, SOL, etc., not the 50 low-caps), which profits from the SPREAD between two correlated assets reverting rather than from either asset's own direction.
+
+This is the one result from the entire research arc (11+ strategies tested across both the low-cap and majors universes) that has survived every rigor check applied all project: a cost-model bug found and fixed, a concentration check, real out-of-sample pair selection, a proper 5-fold rolling walk-forward (pairs re-selected using only prior data each fold, tested only on that fold's strictly-future window), and real (not estimated) Binance funding-rate costs applied to every short leg's actual holding period.
+
+**Result: all 5 walk-forward folds had win rates above 55%** (60.9%, 77.8%, 64.3%, 58.1%, 69.6% — 222 trades total, 66.2% blended win rate). No other strategy tested this entire project had even one fold like this. But **only 3 of 5 folds were net profitable** (-$3,219, +$111, +$11,279, -$916, +$1,093 = +$8,348 combined, non-compounding across folds) — folds 1 and 4 lost money despite majority-winning trades, because a minority of trades where the spread didn't revert and hit the divergence stop were large enough to overwhelm the many small wins. Fold 3's outsized +$11,279 was concentration-checked and is broad-based (spread across multiple pairs/trades), not one lucky outlier.
+
+Verdict: the core "correlated spread reverts" mechanism works reliably (the win-rate consistency is the real finding), but current risk management (stop placement / position sizing on the losing tail) doesn't yet convert that reliably into profit every period. This is a lead worth refining (tighter divergence stops, or asymmetric sizing that respects the fat-tailed loss distribution), not yet a strategy to trade. Full writeup: `results/report_final.html`, section "Eleventh test" / "The distinctive result", published at https://claude.ai/code/artifact/2adfe659-2441-4f06-810d-dd16a1c4ebeb. Code: `src/pairs_signals.py`, `src/backtest_pairs.py`, `src/run_pairs_walkforward.py`.
+
+Do not restart the low-cap directional-strategy research (CAE/SMC/Donchian) per the verdict below. Do continue the pairs-trading thread if picking this project back up — it's the one open, unresolved lead.
+
+---
+
 ## CONCLUDED (2026-08-25, synced locally from cloud session cse_01Tda1apTJLKgThCCYZeRujN)
 
 **Final verdict: the Donchian trend system does not survive walk-forward validation or mark-to-market scrutiny. No configuration found across all three strategy families (CAE, SMC, Donchian trend) shows a genuine, robust, forward-usable edge. Do not restart this research direction without a genuinely new idea.**
