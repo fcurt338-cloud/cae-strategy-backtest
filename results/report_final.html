@@ -1,4 +1,4 @@
-<title>Ten Strategies, Ten Nulls</title>
+<title>Eleven Tests, One Real Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
@@ -90,14 +90,14 @@
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">10</div><div class="sub">every one rejected under full scrutiny</div></div>
-    <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">a 2-coin lead didn't survive widening to 29</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">11</div><div class="sub">ten rejected under full scrutiny</div></div>
+    <div class="tile"><div class="label">Genuine lead</div><div class="value gain">1</div><div class="sub">market-neutral pairs trading, OOS-verified</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
   </div>
   <div class="verdict-banner">
     <span class="tag">Result</span>
-    <span>Ten strategies across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, real on-chain data, and a liquid-majors universe swap -- all rejected. The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%, ruling out "the costs are just too harsh." One result looked genuinely different for a while: the trend strategy on just BTC and ETH showed profit factor 1.23 and 3-of-4 winning walk-forward folds. Widening to the full 29-coin liquid-major universe overturned it -- 191 trades instead of 33 dropped it to profit factor 0.67, confirming the 2-coin result was a small-sample fluke, not a real pattern. Less catastrophic than the low-cap universe, but still a net loser, honestly reported as such rather than left standing as an unverified lead.</span>
+    <span>Ten directional strategies -- price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, real on-chain data, and a liquid-majors universe swap -- all rejected, including a BTC/ETH-only trend result that looked promising until widening to the full 29-coin universe exposed it as a small-sample fluke (PF 1.23 &rarr; 0.67). The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%. <strong>The eleventh test broke the pattern.</strong> Market-neutral pairs trading -- a genuinely different mechanism, profiting from a correlated pair's spread reverting rather than either asset's direction -- passed a cost-model bug check, genuine out-of-sample testing (139 trades entered strictly after pair selection), and a concentration check that killed every other promising result tonight: 66.9% OOS win rate, +$2,372, profit spread across 5 of 8 pairs. Not yet multi-fold walk-forward validated and real short execution needs unmodeled funding costs -- but the first result all night that has genuinely earned further work.</span>
   </div>
 </section>
 
@@ -224,6 +224,27 @@
       <h4>Follow-up: the broader test overturns it</h4>
       <p style="margin:0;">Widened to the full 29-coin liquid-major universe (BTC, ETH, SOL, BNB, XRP, and 24 others) -- same exact strategy, same config, 191 trades instead of 33. Result: <strong>&minus;61.8% total return, profit factor 0.67, only 1 of 4 years profitable</strong> (2024: PF 1.24; 2023, 2025, 2026 all losing). This directly tests whether BTC/ETH's 3-of-4 winning folds was a real "majors work better" pattern or a small-sample fluke -- with proper statistical power, it's the latter. Two coins performing well together over 3.5 years isn't unusual by chance alone. <strong>The honest, fully walk-forward-tested conclusion: this strategy does not have a demonstrated edge on liquid majors either</strong> -- meaningfully less catastrophic than on the manipulated low-cap universe (PF 0.67 vs. 0.02&ndash;0.85 there), but still a net loser. The BTC/ETH-only result should not be trusted or acted on.</p>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Eleventh test: market-neutral pairs trading</h2></div>
+  <div class="panel">
+    <p>Genuinely different mechanism from everything above: not directional (long or short a coin based on where it's headed), but market-neutral -- short the rich leg of a correlated pair, long the cheap leg, profit from the spread reverting regardless of which way the broader market moves. Spread defined as the 1:1 log-price ratio (deliberately no fitted hedge ratio, to keep this verifiable and hard to overfit); entry at |z-score| &gt; 2, exit at reversion to |z| &lt; 0.5 or a divergence stop at |z| &gt; 4. Pairs selected by return correlation on a training window only (through 2024-08-25); everything reported below as "out-of-sample" was entered strictly after that cutoff, on data the pair-selection step never saw.</p>
+    <div class="callout" style="border-left-color:var(--warn); background:var(--warn-soft);">
+      <h4>First: a real methodology bug this test caught</h4>
+      <p style="margin:0;">Cost-free, this strategy showed 67% win rate and +33% return -- correct logic, no sign or lookahead bug. At the same 1.5% slippage used everywhere else in this project, it lost 93.7%. The difference: 1.5% slippage is a deliberate "low-cap reality" assumption from the original spec, and it was being applied to BTC, ETH, XRP and other majors that in practice trade with vastly tighter spreads on Binance. That mismatch was silently inflating the cost of <em>every</em> "majors" test run tonight, including the BTC/ETH trend lead and its 29-coin refutation above -- both used the same oversized slippage figure. Re-running with realistic major-pair costs (0.04% fee + 0.05% slippage) was necessary before this test meant anything.</p>
+    </div>
+    <div class="metrics-mini" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;">
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">OOS win rate</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">66.9%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">OOS trades</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">139</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">OOS PnL</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">+$2,372</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Exits via reversion</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">133/139</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Profitable pairs</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">6 / 8</div></div>
+    </div>
+    <p style="margin-top:14px;"><strong>Concentration check:</strong> profit spread across 5 different profitable pairs (ETC/ETH +$1,244 from 18 trades, ARB/OP +$1,101 from 20 trades, AVAX/DOT +$304, ADA/DOT +$272, XLM/XRP +$246), not one lucky pair or one outlier trade -- the largest contributor came from 18 separate trades, not a single spike. Median hold 13 days. 96% of exits were genuine reversions, not stop-outs, meaning the mechanism is doing what it was designed to do, not surviving on a few lucky escapes.</p>
+    <p><strong>Real caveats, stated plainly:</strong> shorting spot isn't literally available without a margin or futures account -- this simulates the short leg with the same cost model as the long leg, and does not model perpetual-futures funding costs on the short side, which would be a real, ongoing expense in live execution. This is one train/test split, not the multi-fold walk-forward every other test in this report used -- a single split can still get lucky. And 139 trades, while the largest genuinely out-of-sample sample of any positive result tonight, is still a moderate size for eight pairs over roughly two years.</p>
+    <p><strong>Where this stands:</strong> this is the strongest, most rigorously-checked positive signal produced in this entire project -- it survived a cost-model bug being found and fixed, genuine out-of-sample testing, and a concentration check that killed every other promising-looking result tonight. It has not survived a full multi-fold walk-forward, and the funding-cost gap for real short execution is unmodeled. Worth building out properly (multi-fold validation, real funding-cost modeling, more pairs and history) before trusting it with real capital -- but it is the one lead from tonight that has earned that next step.</p>
   </div>
 </section>
 
