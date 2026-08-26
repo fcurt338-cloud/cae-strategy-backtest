@@ -1,4 +1,4 @@
-<title>Nine Nulls, One Open Lead</title>
+<title>Ten Strategies, Ten Nulls</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
@@ -90,14 +90,14 @@
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">10</div><div class="sub">9 rejected on the low-cap universe</div></div>
-    <div class="tile"><div class="label">Open lead</div><div class="value warn">1</div><div class="sub">same trend system, BTC/ETH instead of low-caps</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">10</div><div class="sub">every one rejected under full scrutiny</div></div>
+    <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">a 2-coin lead didn't survive widening to 29</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
   </div>
   <div class="verdict-banner">
     <span class="tag">Result</span>
-    <span>Nine strategies across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, and real on-chain data -- all rejected on the 50-coin low-cap universe, none surviving walk-forward validation or a concentration check. The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%, ruling out "the costs are just too harsh." But the tenth test changed one variable -- same trend strategy, BTC and ETH instead of low-caps -- and produced a structurally different result: profit factor 1.23, three consecutive positive years, distributed (not single-coin) winners. Thin sample, not yet walk-forward validated, not a proven edge -- but the first result all night that earned scrutiny instead of rejection.</span>
+    <span>Ten strategies across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, real on-chain data, and a liquid-majors universe swap -- all rejected. The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%, ruling out "the costs are just too harsh." One result looked genuinely different for a while: the trend strategy on just BTC and ETH showed profit factor 1.23 and 3-of-4 winning walk-forward folds. Widening to the full 29-coin liquid-major universe overturned it -- 191 trades instead of 33 dropped it to profit factor 0.67, confirming the 2-coin result was a small-sample fluke, not a real pattern. Less catastrophic than the low-cap universe, but still a net loser, honestly reported as such rather than left standing as an unverified lead.</span>
   </div>
 </section>
 
@@ -219,7 +219,11 @@
     </div>
     <p style="margin-top:14px;"><strong>The concentration check that killed every promising-looking result tonight, applied here too:</strong> the winning trades are spread across both symbols, four different years, and eight separate positions ($641, $494, $400, $334, $285, $194, $162, $93) &mdash; not one coin's isolated rally propping up an average. That's a structurally different signature than the trend system's SUPERUSDT dependency or the on-chain test's ALLOUSDT dependency above.</p>
     <p><strong>Update: ran the formal 4-fold walk-forward split, same methodology as every other test in this report.</strong> Result: 3 of 4 folds profitable (PF 1.98, 1.15, 1.53), one clean loss (fold 2, 2023&ndash;24: PF 0.00, every trade a loser). Splitting into independent folds forces each one to rebuild its 75&ndash;180 day lookback from scratch, a stricter test than the continuous by-year view above -- and it still holds up. This is the most walk-forward-resilient result across all ten tests tonight.</p>
-    <p><strong>Still not proof of an edge.</strong> 6&ndash;8 trades per fold across 2 assets is a thin sample, and fold 2's total failure is a real, structural weak point, not noise to wave away. What this has earned is exactly what it's labeled: a genuine, promising, honestly-uncertain lead -- worth more data (longer history, a few more liquid majors) before being trusted, not more parameter tuning on the same two coins.</p>
+    <p><strong>Still not proof of an edge.</strong> 6&ndash;8 trades per fold across 2 assets is a thin sample, and fold 2's total failure is a real, structural weak point, not noise to wave away. What this earned was exactly what it was labeled: a promising, honestly-uncertain lead worth testing further with more statistical power -- not yet a strategy.</p>
+    <div class="callout" style="border-left-color:var(--loss); background:var(--loss-soft);">
+      <h4>Follow-up: the broader test overturns it</h4>
+      <p style="margin:0;">Widened to the full 29-coin liquid-major universe (BTC, ETH, SOL, BNB, XRP, and 24 others) -- same exact strategy, same config, 191 trades instead of 33. Result: <strong>&minus;61.8% total return, profit factor 0.67, only 1 of 4 years profitable</strong> (2024: PF 1.24; 2023, 2025, 2026 all losing). This directly tests whether BTC/ETH's 3-of-4 winning folds was a real "majors work better" pattern or a small-sample fluke -- with proper statistical power, it's the latter. Two coins performing well together over 3.5 years isn't unusual by chance alone. <strong>The honest, fully walk-forward-tested conclusion: this strategy does not have a demonstrated edge on liquid majors either</strong> -- meaningfully less catastrophic than on the manipulated low-cap universe (PF 0.67 vs. 0.02&ndash;0.85 there), but still a net loser. The BTC/ETH-only result should not be trusted or acted on.</p>
+    </div>
   </div>
 </section>
 
