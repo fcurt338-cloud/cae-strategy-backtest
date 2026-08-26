@@ -100,6 +100,9 @@ def run_pairs_backtest(symbol_dfs: Dict[str, pd.DataFrame], cfg: PairsConfig, pa
             elif abs(z) >= cfg.stop_z:
                 should_exit = True
                 reason = "stop"
+            elif cfg.max_holding_days is not None and (d - trade.entry_time).days >= cfg.max_holding_days:
+                should_exit = True
+                reason = "time_stop"
 
             if should_exit:
                 price_long_exit = wide_open.loc[exec_date, trade.sym_long] if trade.sym_long in wide_open.columns else np.nan

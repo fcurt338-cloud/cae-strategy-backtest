@@ -39,6 +39,10 @@ class PairsConfig:
     slippage_pct: float = 0.015
     risk_pct_per_trade: float = 0.0075
     max_concurrent_pairs: int = 4
+    max_holding_days: int = None  # hard time stop -- force-exit regardless of z after this many days.
+                                   # None = disabled (original behavior). A separate risk mechanism from
+                                   # stop_z: caps how long a trade can wait for reversion, independent of
+                                   # how far the spread has moved.
 
 
 def daily_log_prices(symbol_dfs: dict) -> pd.DataFrame:

@@ -75,7 +75,8 @@ def load_majors():
 
 
 def run_walkforward(n_folds=6, top_n=8, zscore_window=30, entry_z=2.0, exit_z=0.5, stop_z=4.0,
-                     fee=0.0004, slip=0.0005, starting_equity=10_000.0, verbose=True):
+                     fee=0.0004, slip=0.0005, starting_equity=10_000.0, verbose=True,
+                     max_holding_days=None):
     symbols = load_majors()
     funding_rates = load_funding_rates()
     log_prices = daily_log_prices(symbols)
@@ -85,7 +86,7 @@ def run_walkforward(n_folds=6, top_n=8, zscore_window=30, entry_z=2.0, exit_z=0.
     fold_len = total_days // n_folds
 
     cfg = PairsConfig(zscore_window=zscore_window, entry_z=entry_z, exit_z=exit_z, stop_z=stop_z,
-                       taker_fee_pct=fee, slippage_pct=slip)
+                       taker_fee_pct=fee, slippage_pct=slip, max_holding_days=max_holding_days)
 
     fold_results = []
     all_oos_trades = []

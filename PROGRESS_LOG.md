@@ -1,5 +1,23 @@
 # Low-cap crypto trend-strategy research — progress log
 
+## FINAL CONCLUSION (2026-08-26): no tradeable edge found after 16 strategies
+
+This closes the research arc. After the pairs-trading lead below, five more things were tried:
+
+1. **Extended majors history back to real listing dates** (was artificially floored at 2023-01-15 — an inherited constant, not a data limit). OKX has BTC/ETH/LINK/LTC/ETC/XLM/TRX/XRP back to 2018, most others to their real launch dates. Verified clean (sorted, no dupes, no gaps, listing dates match reality).
+2. **Pairs trading re-tested on the full 2018-2026 history (13 folds instead of 5): the earlier "one real lead" reversed.** 502 trades, 60.2% win rate (still elevated — mechanism is real) but net **-$6,603**, only 5/13 folds profitable. The 2023-2026-only result was a favorable stretch inside a longer history that loses money more often than it wins once tested fully — same failure mode as everything else in this report.
+3. **Five separate fix attempts on pairs trading, all failed**: freezing the exit z-score reference (made it much worse — the rolling window was acting as a beneficial adaptive timeout, not a bug), widening the candidate pair pool (diluted the edge, didn't grow it), tightening the stop (cosmetic — didn't fix either losing fold), a hard time-stop (no clear fix), continuously scaled-down exposure (halved the loss magnitude but destroyed the win-rate edge by taxing normal trade noise). See `src/backtest_pairs_scaled.py`, `src/run_pairs_walkforward_scaled.py`.
+4. **Funding-rate arbitrage (cash-and-carry)**: real in 2023-2024 (+11% annualized), decayed to ~1-3%/year by 2025-2026 — consistent with crowding. Biggest unmodeled risk: spot-vs-perp basis itself (not fetched). See `src/funding_arb_signals.py`, `src/backtest_funding_arb.py`.
+5. **Single-asset mean reversion**: clean, fast, decisive null. 18,180 trades, 48.2% win rate, -$8,853, every year 2018-2026 negative, 28/29 symbols negative. See `src/single_asset_mr_signals.py`, `src/backtest_single_asset_mr.py`.
+6. **Day-of-week seasonality**: initial pooled t-stats (up to 6.06) were a statistical artifact from treating 29 correlated symbols as independent observations. Redone correctly (daily portfolio-level, n=448/weekday) — nothing survives multiple-comparison correction.
+7. **Liquidation-wick reversal (original strategy, not a textbook pattern)**: built from a real mechanism — forced-liquidation cascades are mechanical, non-informational flow that should exhaust and revert, unlike genuine information-driven moves. Signal: extreme range + extreme volume + ≥66% same-bar rejection. Found a real edge in 2018-2019 (crude/early market structure); **robustly, consistently dead in 2023-2026 across three different exit-timing configurations** — most likely because exchange liquidation engines matured past this exact pattern since ~2020. See `src/liq_wick_signals.py`, `src/backtest_liq_wick.py`, `src/run_liq_wick_backtest.py`.
+
+**Total: 16 distinct strategies tested across both universes. All rejected.** Two (pairs trading, liquidation-wick) found genuinely real historical signals that do not survive to the present — a more informative kind of null than "never worked," since it confirms the search process finds real things when they exist. Full writeup: `results/report_final.html` ("Sixteen Tests, No Edge"), published at https://claude.ai/code/artifact/2adfe659-2441-4f06-810d-dd16a1c4ebeb.
+
+Do not restart any of the 16 tested approaches without a genuinely new data source or mechanism (order-book depth, tick-level cross-exchange lead-lag, options-derived signals, or a different asset class). Untested and still open: open interest as a signal, actual spot-vs-perp basis data, stablecoin de-peg mean reversion (likely too few real events for a robust sample), basket/index relative-value (a diversified alternative to pairwise correlation that could address pairs trading's diagnosed weakness).
+
+---
+
 ## UPDATE (2026-08-25): a genuinely different strategy family found a real lead — pairs trading on majors
 
 The "CONCLUDED" verdict directly below is specific to the low-cap universe and the CAE/SMC/Donchian-trend strategy families (all directional, long-only). After that verdict, research pivoted to a structurally different approach on a different universe: **market-neutral pairs trading (stat-arb) on the 29 largest-cap USDT perps** (BTC, ETH, SOL, etc., not the 50 low-caps), which profits from the SPREAD between two correlated assets reverting rather than from either asset's own direction.

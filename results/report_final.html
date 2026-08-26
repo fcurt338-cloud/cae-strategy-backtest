@@ -1,4 +1,4 @@
-<title>Eleven Tests, One Real Lead</title>
+<title>Sixteen Tests, No Edge</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
@@ -82,22 +82,22 @@
 <div class="wrap">
 
 <header class="masthead">
-  <div class="eyebrow">Consolidated final report · low-cap crypto strategy research · Binance, 2023–2026</div>
-  <h1>Six Strategies, Six Nulls</h1>
-  <p class="subtitle">A systematic search for a working systematic strategy on 50 low-cap Binance USDT pairs. Six mechanically distinct signal families, each rigorously backtested and walk-forward validated. None survive. That consistency is itself the finding.</p>
+  <div class="eyebrow">Consolidated final report · crypto strategy research · Binance/OKX, 2018–2026</div>
+  <h1>Sixteen Tests, No Edge</h1>
+  <p class="subtitle">A systematic, months-long search for a working systematic strategy across low-cap and large-cap crypto, spanning breakout, trend, cross-sectional, carry, relative-value, single-asset reversal, calendar, and an original liquidation-mechanics idea. Sixteen mechanically distinct approaches, each rigorously backtested and walk-forward validated against as much real history as could be found. None survive. That consistency, across this many genuinely different mechanisms, is itself the finding.</p>
 </header>
 
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">11</div><div class="sub">ten rejected under full scrutiny</div></div>
-    <div class="tile"><div class="label">Genuine lead</div><div class="value gain">1</div><div class="sub">market-neutral pairs trading, OOS-verified</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">16</div><div class="sub">sixteen rejected under full scrutiny</div></div>
+    <div class="tile"><div class="label">Historical leads found</div><div class="value warn">2</div><div class="sub">real in the past, dead in the current market</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
   </div>
   <div class="verdict-banner">
     <span class="tag">Result</span>
-    <span>Ten directional strategies -- price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, real on-chain data, and a liquid-majors universe swap -- all rejected, including a BTC/ETH-only trend result that looked promising until widening to the full 29-coin universe exposed it as a small-sample fluke (PF 1.23 &rarr; 0.67). The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%. <strong>The eleventh test broke the pattern.</strong> Market-neutral pairs trading -- a genuinely different mechanism, profiting from a correlated pair's spread reverting rather than either asset's direction -- passed a cost-model bug check, genuine out-of-sample testing (139 trades entered strictly after pair selection), and a concentration check that killed every other promising result tonight: 66.9% OOS win rate, +$2,372, profit spread across 5 of 8 pairs. Not yet multi-fold walk-forward validated and real short execution needs unmodeled funding costs -- but the first result all night that has genuinely earned further work.</span>
+    <span>Ten directional strategies on 50 low-cap coins -- price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, real on-chain data, and a liquid-majors universe swap -- all rejected, including a BTC/ETH-only trend result exposed as a small-sample fluke once widened to 29 coins. Market-neutral pairs trading looked like a genuine, statistically significant exception -- a real win-rate edge (p&asymp;7.7&times;10&supminus;&sup7;) holding up across 5 rolling walk-forward folds on 2023&ndash;2026 data -- until extending the same test back to 2018 (the real available history, not an arbitrary cutoff) reversed it: only 5 of 13 folds profitable, net &minus;$6,603. Five separate, principled fix attempts (freezing the exit reference, widening the pair pool, tightening the stop, a hard time-stop, and a continuously scaled-exposure position size) all failed to rescue it. A structurally different, cash-flow-based approach -- funding-rate arbitrage -- was real in 2023&ndash;2024 and has decayed toward zero since, consistent with crowding. An original strategy built from a specific market mechanism (liquidation-cascade exhaustion, detected via a wide-range/high-volume/rejected-wick signature) found a real edge in 2018&ndash;2019's cruder market structure that is robustly, consistently dead across 2023&ndash;2026 under every parameter setting tried -- most likely because exchange liquidation engines have matured past the pattern it hunts for. The framework itself was separately validated throughout: a perfect-foresight oracle under the identical cost model returned +84.6M%.</span>
   </div>
 </section>
 
@@ -267,6 +267,90 @@
 </section>
 
 <section>
+  <div class="section-head"><h2>Twelfth test: pairs trading, revisited on the real available history</h2></div>
+  <div class="panel">
+    <p>The eleventh test's 2023&ndash;2026 walk-forward was the most rigorously validated result in this project -- but it only covered 3.6 years, and the data's 2023-01-15 start date turned out to be an arbitrary constant inherited from the low-cap project, not an actual limit. BTC, ETH, and most of these majors have years more real history on OKX. Extending every symbol backward to its true listing date (verified sorted, zero duplicates, no gaps, and every new listing date checked against when that token actually launched) pushed the dataset back to 2018-01-11 -- 8.6 years instead of 3.6, and 13 genuine out-of-sample folds instead of 5.</p>
+    <div class="verdict-banner" style="margin-top:14px;">
+      <span class="tag">Reversal</span>
+      <span>502 trades, 60.2% win rate (still elevated) but <strong>&minus;$6,603 total P&amp;L</strong>, and only <strong>5 of 13 folds (38%) profitable</strong> -- below a coin flip. The 2023&ndash;2026-only result wasn't a persistent structural edge; it was a favorable stretch inside a longer history that, tested fully, loses money more often than it wins. This is the exact failure mode that sank every low-cap strategy earlier in this report: looks fine on a narrow recent window, doesn't survive the fuller history.</span>
+    </div>
+    <p style="margin-top:14px;"><strong>The win-rate edge itself is not an illusion, though.</strong> Only 2 of the 13 folds had a sub-50% win rate -- the mean-reversion mechanism (correlated spreads coming back together) is genuinely, persistently real across regimes. What breaks it is the same tail-risk problem the eleventh test already flagged: a minority of trades that don't revert lose far more than the many small trades win, and that asymmetry holds throughout the full 8.6-year history, not just the recent window.</p>
+    <h3 style="margin-top:20px; font-size:1rem;">Five fix attempts, five failures</h3>
+    <div class="bug-list">
+      <div class="bug"><span class="where">1 &middot; Freeze the exit reference</span>Hypothesis: the rolling 30-day z-score window recomputes during an open trade, so a spread that's still moving against the position can look "reverted" simply because the window's own mean drifted along with it. Fix tested: measure exit reversion against the mean/std frozen at entry instead. Result: catastrophically worse (win rate 66%&rarr;36%, P&amp;L +$8,348&rarr;&minus;$4,873). The "bug" was actually the window acting as an unintentional adaptive timeout, cutting losing trades early before they could grow large. Freezing it removed that safety net.</div>
+      <div class="bug"><span class="where">2 &middot; Widen the pair pool</span>Hypothesis: 222 trades over 3 years is a thin sample; more candidate pairs (top 8 &rarr; top 15/20 by correlation) should add trades without changing the mechanism. Result: trade count barely grew (capped by the 4-concurrent-position limit), and the added, lower-correlation pairs were net losers, flipping the total negative. Confirms the edge is concentrated in a handful of genuinely tightly-linked pairs, not a fixable sampling issue.</div>
+      <div class="bug"><span class="where">3 &middot; Tighten the divergence stop</span>stop_z 4.0 &rarr; 3.5 improved the aggregate number (+$8,348 &rarr; +$12,162) but a per-fold check showed it didn't fix either losing fold -- fold 4 actually got worse. The entire "improvement" came from the one dominant winning fold getting bigger, not from the tail-risk problem being addressed. Cosmetic, not real; reverted.</div>
+      <div class="bug"><span class="where">4 &middot; Hard time-stop</span>Force-exit any trade held past a fixed number of days, independent of z-score. Tested at 20/30/40 days: modest or no improvement, no clear fix to the two structurally losing folds.</div>
+      <div class="bug"><span class="where">5 &middot; Continuously scaled-down exposure</span>Instead of changing WHEN a trade exits, shrink position size linearly as the spread moves from entry_z toward stop_z, so no single trade could produce the worst tail losses. Result: cut the loss magnitude nearly in half (&minus;$6,603 &rarr; &minus;$3,599) but also destroyed the win-rate edge (60.2%&rarr;53.0%) and worsened fold-level consistency (5/13&rarr;3/13 profitable). Most winning trades wobble against the position briefly before reverting; the scaling rule locked in small losses on that normal noise, taxing good trades more than it protected against bad ones.</div>
+    </div>
+    <p class="dim" style="font-size:.85rem; margin-top:10px;">Five different levers, on the one strategy in this entire project with a statistically real signal, all failing is itself informative: this isn't an engineering problem waiting for a sixth clever fix. After realistic costs and a full market cycle, this specific mean-reversion edge sits at roughly breakeven-to-negative.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Thirteenth test: funding-rate arbitrage (cash-and-carry)</h2></div>
+  <div class="panel">
+    <p>Structurally different from every other test: not a directional bet, not a relative-value bet, but harvesting a real cash flow. Long spot + short the perpetual future, dollar-neutral -- collects the funding payment whenever the rate is positive (Binance convention: longs pay shorts), with no bet on price direction at all. Real Binance funding-rate history for 28 majors, 2023&ndash;2026.</p>
+    <div class="metrics-mini" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;">
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Symbols net positive</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">22&ndash;27 / 28</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Best full-period annualized</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">8&ndash;9%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">2024 yield</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">+11.06%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">2026 yield (partial)</div><div class="v loss" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--loss);">&minus;0.87%</div></div>
+    </div>
+    <p style="margin-top:14px;"><strong>The full-period average is misleading -- the same trap that sank trend-following.</strong> Checked year by year: 2023 +4.85%, <strong>2024 +11.06%</strong> (nearly the entire full-period gain, one strong bull-market year of one-sided leverage demand), 2025 +1.33%, 2026 (partial) <strong>&minus;0.87%</strong>. A trailing-14-day timing filter (only hold while recent funding is positive) helped in every single year -- a genuine, causal, no-lookahead improvement -- but the trend under the improved version is the same: 11.06% &rarr; 3.14% &rarr; ~1.5% annualized. The likely explanation is crowding: as more capital has flowed into this well-known, easy-to-execute trade since 2023&ndash;2024, the premium has compressed toward nothing.</p>
+    <p><strong>Biggest unmodeled risk, stated plainly:</strong> this backtest assumes spot and perp prices move in lockstep and only collects the funding payment -- it does not model the spot-perp basis itself changing between entry and exit, typically the largest real cost in this trade (it's literally what funding exists to correct). No separate spot-vs-perp price series was available to model that honestly, so even the thin 1&ndash;3% recent-year figures are an optimistic upper bound, not a validated net return.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Fourteenth test: single-asset short-term mean reversion</h2></div>
+  <div class="panel">
+    <p>Does an asset that just moved sharply <em>in isolation</em> (not relative to another asset) tend to snap back? Rolling z-score of a 12-bar trailing return, normalized by that symbol's own rolling volatility (adaptive per-symbol, not a fixed % threshold); contrarian entry at |z| &gt; 2, ATR stop-loss, hard 48-bar time-stop. 29 majors, full 2018&ndash;2026 history.</p>
+    <div class="verdict-banner" style="margin-top:14px;">
+      <span class="tag">Clean null</span>
+      <span><strong>18,180 trades, 48.2% win rate (essentially a coin flip, slightly worse), &minus;$8,853 total.</strong> Every single year from 2018 through 2026 is negative. 28 of 29 symbols are net negative. No walk-forward gymnastics needed to catch this one -- it's flatly wrong on every cut, immediately. Short-term contrarian reversal does not exist in crypto majors at this timeframe; if anything the data leans slightly toward continuation, not reversal.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Fifteenth test: day-of-week seasonality</h2></div>
+  <div class="panel">
+    <p>A cheap, fast screen: pooled hourly returns across all 29 majors, grouped by day-of-week (UTC), t-tested against zero. Initial result looked dramatic -- t-stats up to &minus;6.06 (Wednesday) and +5.95 (Saturday) on 221,000+ observations per day.</p>
+    <div class="callout" style="border-left-color:var(--warn); background:var(--warn-soft); margin-top:14px;">
+      <h4>Caught before reporting: a statistical artifact, not a real effect</h4>
+      <p style="margin:0;">Pooling 29 highly cross-correlated symbols' hourly returns as if they were 1.5M independent observations massively inflates apparent significance -- crypto assets move together, so the true effective sample size is closer to the number of independent days, not hours&times;symbols. Redone correctly: collapse to one equal-weight portfolio return series first, aggregate to daily, then test with n = 448 days per weekday (the honest unit of independence). Result: <strong>no day clears significance</strong> once multiple-comparison correction for testing 7 buckets is applied (Saturday's t=2.15 is the strongest, short of the ~2.7 threshold that would require). Day-of-week seasonality in crypto majors is not detectable in this data.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Sixteenth test: liquidation-wick reversal &mdash; an original strategy</h2></div>
+  <div class="panel">
+    <p>Not a textbook pattern -- built from a specific, understood market mechanism. Leveraged perpetual futures markets periodically produce forced-liquidation cascades: price moves sharply because over-leveraged positions are being mechanically force-closed, not because of new information. That kind of move should exhaust itself once the leveraged positions are cleared, unlike a genuine information-driven move, which persists. The signal requires all three of: (1) bar range unusually wide vs. the symbol's own recent bars (z &gt; 2), (2) volume unusually high vs. recent bars (z &gt; 2, confirming forced execution, not a quiet drift), and (3) the bar closed back at least 66% of its own range away from the extreme (the forced flow was absorbed within the bar, not merely paused). Entry next-bar-open in the rejection direction; ATR stop beyond the wick, 2R profit target, 24h hard time-stop.</p>
+    <div class="metrics-mini" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;">
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Full period</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">&minus;$177</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Win rate</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">44.4%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Trades</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">15,325</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">2018 alone</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">+$9,587</div></div>
+    </div>
+    <p style="margin-top:14px;">44.4% win rate against a 2:1 reward:risk payoff is meaningfully above the ~33% breakeven that structure implies -- a real signal in the payoff shape. But the year breakdown tells the actual story: <strong>2018 alone contributes +$9,587; every year since is flat-to-negative.</strong> Tested whether this was just poor exit calibration (61% of trades were resolving via an ambiguous 24h timeout rather than a clean win or loss) by trying 12h and 8h time-stops instead of 24h:</p>
+    <div class="tbl-wrap" style="margin-top:10px;">
+      <table>
+        <thead><tr><th>Year</th><th>24h stop</th><th>12h stop</th><th>8h stop</th></tr></thead>
+        <tbody>
+          <tr><td>2023</td><td class="loss">&minus;$2,698</td><td class="loss">&minus;$3,068</td><td class="loss">&minus;$1,399</td></tr>
+          <tr><td>2024</td><td class="loss">&minus;$2,264</td><td class="loss">&minus;$3,777</td><td class="loss">&minus;$1,104</td></tr>
+          <tr><td>2025</td><td class="loss">&minus;$2,311</td><td class="loss">&minus;$1,718</td><td class="loss">&minus;$342</td></tr>
+          <tr><td>2026</td><td class="loss">&minus;$710</td><td class="loss">&minus;$967</td><td class="loss">&minus;$352</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;"><strong>Not a calibration problem.</strong> 2023&ndash;2026 is negative every year, in all three configurations -- consistent, not parameter-fragile. The likely, mechanically coherent explanation: exchange liquidation engines matured materially after ~2020 (partial liquidations, deeper insurance funds, smarter risk engines), so the raw cascading-wick pattern this strategy hunts for has plausibly been engineered out of existence by the exchanges themselves. A real signal in a bygone market structure, dead in the one that matters now.</p>
+  </div>
+</section>
+
+<section>
   <div class="section-head"><h2>The oracle check</h2></div>
   <div class="panel">
     <p>Before accepting "no edge anywhere" as the conclusion, the framework itself needed to be ruled out as the problem. A perfect-foresight oracle &mdash; ranking each week by the coin's <em>actual</em> forward return (impossible in real trading, pure calibration) &mdash; was run through the exact same cross-sectional engine, same costs, same position sizing:</p>
@@ -290,8 +374,9 @@
 
 <section class="prose">
   <div class="section-head"><h2>What this actually means</h2></div>
-  <p>Six mechanically different approaches to reading price, volume, positioning, and order flow on this specific 50-coin low-cap universe, over this specific ~3.5-year window, show no edge that survives being tested honestly. That's a real, defensible, and useful result &mdash; not a failure of effort. A single null result could be a bad implementation; six independent nulls across genuinely different information sources, with the cost model separately validated as not the culprit, is a much stronger statement about this specific universe and this specific data.</p>
-  <p>It does <strong>not</strong> mean no edge exists anywhere in low-cap crypto. It means: not in OHLCV price action, not in cross-sectional relative strength, not in perpetual funding positioning, and not in taker order-flow imbalance, on this exact set of 50 coins, at daily-to-weekly rebalancing. Anything requiring different information entirely &mdash; on-chain wallet flow, order-book depth beyond what's public, or a genuinely different universe/timeframe with a larger sample &mdash; is untested, not disproven.</p>
+  <p>Sixteen mechanically different approaches to reading price, volume, positioning, order flow, funding, on-chain activity, calendar structure, and liquidation mechanics -- across both a 50-coin low-cap universe and a 29-coin liquid-majors universe, tested against as much real history as could be found (back to 2018 for the majors) -- show no edge that survives being tested honestly. That's a real, defensible, and useful result, not a failure of effort. A single null could be a bad implementation; sixteen independent nulls across this many genuinely different information sources and mechanisms, with the cost model separately validated as not the culprit, is a much stronger statement.</p>
+  <p>Two results deserve a more precise verdict than a flat "no": market-neutral pairs trading and the liquidation-wick strategy both found <strong>real, statistically genuine signals that do not hold up today</strong> -- one lost to tail risk that resisted five different fix attempts, the other to markets that have structurally matured past the mechanism it was built to exploit. That's a different, more informative kind of null than "never worked" -- it means the search process itself is sound enough to find real things, and what it found doesn't survive contact with the present.</p>
+  <p>It does <strong>not</strong> mean no edge exists anywhere in crypto. It means: not in OHLCV price action (breakout, trend, or single-asset reversal), not in cross-sectional relative strength, not in perpetual funding positioning (directional or carry), not in taker order-flow imbalance, not in day-of-week calendar structure, not in correlated-pair mean reversion over a full market cycle, and not in the specific liquidation-cascade signature tested, on these two universes, at these timeframes. Anything requiring different information entirely -- order-book depth beyond what's public, tick-level cross-exchange lead-lag, options-derived signals, or a genuinely different asset class -- is untested, not disproven.</p>
 </section>
 
 <footer>
@@ -301,9 +386,15 @@
     <span>src/smc_*.py, backtest_smc.py &mdash; SMT + FVG</span>
     <span>src/trend_signals.py, backtest_trend.py, backtest_trend_pyramid.py &mdash; Donchian trend</span>
     <span>src/momentum_signals.py, backtest_momentum.py &mdash; cross-sectional momentum</span>
-    <span>src/funding_signals.py, fetch_funding_binance.py &mdash; funding rate</span>
+    <span>src/funding_signals.py, fetch_funding_binance.py &mdash; funding rate (directional)</span>
     <span>src/orderflow_signals.py, fetch_orderflow.py &mdash; order-flow imbalance</span>
     <span>src/wf_validation.py &mdash; walk-forward harness (trend system)</span>
+    <span>src/pairs_signals.py, backtest_pairs.py, run_pairs_walkforward.py &mdash; pairs trading</span>
+    <span>src/backtest_pairs_scaled.py, run_pairs_walkforward_scaled.py &mdash; scaled-exposure remediation attempt</span>
+    <span>src/extend_history_backward.py &mdash; majors history extension to real listing dates</span>
+    <span>src/funding_arb_signals.py, backtest_funding_arb.py &mdash; funding-rate arbitrage</span>
+    <span>src/single_asset_mr_signals.py, backtest_single_asset_mr.py &mdash; single-asset mean reversion</span>
+    <span>src/liq_wick_signals.py, backtest_liq_wick.py, run_liq_wick_backtest.py &mdash; liquidation-wick reversal (original)</span>
   </div>
 </footer>
 
