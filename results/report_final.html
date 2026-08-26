@@ -1,4 +1,4 @@
-<title>Six Strategies, Six Nulls</title>
+<title>Nine Nulls, One Open Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
@@ -90,14 +90,14 @@
 <section>
   <div class="section-head"><h2>The verdict</h2></div>
   <div class="verdict">
-    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">9</div><div class="sub">including real on-chain data, not just OHLCV</div></div>
-    <div class="tile"><div class="label">Survived walk-forward</div><div class="value loss">0</div><div class="sub">every one fails out-of-sample</div></div>
+    <div class="tile"><div class="label">Strategies tested</div><div class="value loss">10</div><div class="sub">9 rejected on the low-cap universe</div></div>
+    <div class="tile"><div class="label">Open lead</div><div class="value warn">1</div><div class="sub">same trend system, BTC/ETH instead of low-caps</div></div>
     <div class="tile"><div class="label">Cost-model calibration</div><div class="value gain">passed</div><div class="sub">oracle w/ perfect foresight: +84.6M% under same costs</div></div>
     <div class="tile"><div class="label">Real bugs found &amp; fixed</div><div class="value warn">4</div><div class="sub">none of them explain the result</div></div>
   </div>
   <div class="verdict-banner">
     <span class="tag">Result</span>
-    <span>Not one strategy across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, or a strict cross-signal agreement filter shows a real, forward-usable edge on this universe. The failure is isolated to the signals themselves &mdash; the backtest framework was stress-tested with a perfect-foresight oracle under the identical cost model, which returned an (absurd, as intended) +84.6M%, ruling out "the costs are just too harsh" as the explanation.</span>
+    <span>Nine strategies across price breakouts, liquidity/SMT concepts, trend-following, cross-sectional momentum, funding-rate positioning, order-flow imbalance, a cross-signal agreement filter, listing timing, and real on-chain data -- all rejected on the 50-coin low-cap universe, none surviving walk-forward validation or a concentration check. The framework itself was separately validated: a perfect-foresight oracle under the identical cost model returned +84.6M%, ruling out "the costs are just too harsh." But the tenth test changed one variable -- same trend strategy, BTC and ETH instead of low-caps -- and produced a structurally different result: profit factor 1.23, three consecutive positive years, distributed (not single-coin) winners. Thin sample, not yet walk-forward validated, not a proven edge -- but the first result all night that earned scrutiny instead of rejection.</span>
   </div>
 </section>
 
@@ -192,6 +192,33 @@
       </table>
     </div>
     <p>Three losing folds, one winning fold carrying the entire full-period aggregate &mdash; the identical pattern that sank the Donchian trend system's headline number earlier tonight. Checked what was actually driving fold 4: raw buy-and-hold return for every one of the 17 on-chain-tracked symbols over that window. <strong>Only one symbol was positive &mdash; ALLOUSDT, +54.8%. Every other one of the 17 lost between 18% and 92%.</strong> The fold's entire "win" is one coin's isolated rally in an otherwise uniformly bad stretch for this subset, not broad-based skill at reading on-chain activity. Same failure signature as the trend system's SUPERUSDT dependency, more extreme.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Tenth test: same trend system, on BTC and ETH instead of low-caps</h2></div>
+  <div class="panel">
+    <p>Every test above shared one universe: 50 micro-cap coins with a median buy-and-hold of &minus;63% and real manipulation/wash-trading risk. This tests whether the problem was the <em>strategies</em> or that specific <em>universe</em> &mdash; the exact same Donchian trend config that failed walk-forward on low-caps (75d entry / 30d exit + 180d/40% regime filter), unchanged, run on just BTC and ETH.</p>
+    <div class="metrics-mini" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:14px;">
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Total return</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">&minus;0.58%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Profit factor</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">1.23</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Max drawdown</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">&minus;6.8%</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Avg win : loss</div><div class="v gain" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gain);">3.3 : 1</div></div>
+      <div class="mm" style="padding:10px 12px; background:var(--surface-2); border-radius:8px;"><div class="k" style="font-size:.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:600;">Trades</div><div class="v" style="font-family:'IBM Plex Mono',monospace; font-size:1.05rem; font-weight:600;">33</div></div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:14px;">
+      <table>
+        <thead><tr><th>Year</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>PnL</th></tr></thead>
+        <tbody>
+          <tr><td>2023</td><td>6</td><td class="loss">0.0%</td><td class="loss">0.00</td><td class="loss">&minus;$664</td></tr>
+          <tr><td>2024</td><td>10</td><td>40.0%</td><td class="gain">1.90</td><td class="gain">+$663</td></tr>
+          <tr><td>2025</td><td>11</td><td>27.3%</td><td class="gain">1.52</td><td class="gain">+$474</td></tr>
+          <tr><td>2026</td><td>6</td><td>33.3%</td><td class="gain">1.38</td><td class="gain">+$171</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;"><strong>The concentration check that killed every promising-looking result tonight, applied here too:</strong> the winning trades are spread across both symbols, four different years, and eight separate positions ($641, $494, $400, $334, $285, $194, $162, $93) &mdash; not one coin's isolated rally propping up an average. That's a structurally different signature than the trend system's SUPERUSDT dependency or the on-chain test's ALLOUSDT dependency above.</p>
+    <p><strong>Honest limitation, stated plainly:</strong> 33 trades across 2 assets over 3.5 years is a thin sample -- this has not been walk-forward validated with proper train/test folds the way everything else in this report was, only checked year-by-year. It has not earned the label "working strategy." What it has earned is the first result all night that looks structurally different enough to warrant more scrutiny rather than rejection on sight -- more history, a wider set of liquid majors, and a formal walk-forward split are the natural next steps if this gets picked back up.</p>
   </div>
 </section>
 
